@@ -2,14 +2,41 @@
    BOTICA SANTILLÁN — script.js
    Funcionalidades:
    1. Resaltar enlace activo en la navbar al hacer scroll
-   2. Formulario de comentarios con almacenamiento en localStorage
+   2. Formulario de comentarios con Firebase Firestore
 ════════════════════════════════════════ */
 
 // ──────────────────────────────────────
-// 1. NAVBAR — ENLACE ACTIVO AL SCROLLEAR
+// 1. FIREBASE — CONFIGURACIÓN E INICIO
 // ──────────────────────────────────────
-const sections  = document.querySelectorAll('section[id]');
-const navLinks  = document.querySelectorAll('.nav-links a');
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCaeT08Z-MH4XBbcgh3LvtGMd01JoUHSoE",
+  authDomain: "botica-santillan.firebaseapp.com",
+  projectId: "botica-santillan",
+  storageBucket: "botica-santillan.firebasestorage.app",
+  messagingSenderId: "30323881140",
+  appId: "1:30323881140:web:eab635a5131ce36432d3e1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+
+// ──────────────────────────────────────
+// 2. NAVBAR — ENLACE ACTIVO AL SCROLLEAR
+// ──────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
 
 window.addEventListener('scroll', () => {
   let current = '';
@@ -23,45 +50,17 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(link => {
     const isActive = link.getAttribute('href') === '#' + current;
     link.style.background = isActive ? 'var(--teal)' : '';
-    link.style.color       = isActive ? '#ffffff'    : '';
+    link.style.color      = isActive ? '#ffffff'    : '';
   });
 });
 
 
 // ──────────────────────────────────────
-// 2. COMENTARIOS — CLAVE DE ALMACENAMIENTO
+// 3. COMENTARIOS — FUNCIONES
 // ──────────────────────────────────────
-const STORAGE_KEY = 'botica_santillan_comentarios';
-
-
-/**
- * Obtiene la lista de comentarios guardados en localStorage.
- * @returns {Array} Lista de objetos de comentario.
- */
-function getComentarios() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-
-/**
- * Guarda un nuevo comentario al inicio de la lista en localStorage.
- * @param {Object} comentario - Objeto con nombre, calificacion y comentario.
- */
-function saveComentario(comentario) {
-  const lista = getComentarios();
-  lista.unshift(comentario);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-}
-
 
 /**
  * Convierte un número de estrellas (1-5) en cadena de caracteres ★ / ☆.
- * @param {number} n - Número de estrellas llenas.
- * @returns {string} Representación visual de estrellas.
  */
 function starsHtml(n) {
   return '★'.repeat(n) + (n < 5 ? '☆'.repeat(5 - n) : '');
@@ -70,8 +69,6 @@ function starsHtml(n) {
 
 /**
  * Crea y devuelve un elemento DOM de tarjeta de comentario.
- * @param {Object} c - Objeto con datos del comentario.
- * @returns {HTMLElement} Div con el comentario renderizado.
  */
 function crearTarjetaComentario(c) {
   const div = document.createElement('div');
@@ -86,24 +83,29 @@ function crearTarjetaComentario(c) {
 
 
 /**
- * Renderiza en el DOM los comentarios guardados en localStorage.
- * Se ejecuta al cargar la página.
+ * Carga los comentarios desde Firestore y los muestra en pantalla.
+ * Los ordena del más reciente al más antiguo.
  */
-function renderComentariosGuardados() {
-  const lista     = getComentarios();
-  const container = document.getElementById('listaComentarios');
+async function renderComentariosGuardados() {
+  try {
+    const container = document.getElementById('listaComentarios');
+    const q = query(collection(db, 'comentarios'), orderBy('fecha', 'desc'));
+    const snapshot = await getDocs(q);
 
-  lista.forEach(c => {
-    container.appendChild(crearTarjetaComentario(c));
-  });
+    snapshot.forEach(doc => {
+      container.appendChild(crearTarjetaComentario(doc.data()));
+    });
+  } catch (error) {
+    console.error('Error al cargar comentarios:', error);
+  }
 }
 
 
 /**
- * Recoge los datos del formulario, los valida, los guarda y los muestra.
- * Función llamada desde el botón "Enviar Comentario" en el HTML.
+ * Recoge los datos del formulario, los valida, los guarda en Firestore
+ * y los muestra en pantalla con animación.
  */
-function enviarComentario() {
+window.enviarComentario = async function () {
   const nombre       = document.getElementById('nombre').value.trim();
   const calificacion = document.getElementById('calificacion').value;
   const comentario   = document.getElementById('comentario').value.trim();
@@ -114,30 +116,43 @@ function enviarComentario() {
     return;
   }
 
-  // Crear objeto
-  const nuevo = { nombre, calificacion, comentario };
+  const btnSubmit = document.querySelector('.btn-submit');
+  btnSubmit.disabled    = true;
+  btnSubmit.textContent = 'Enviando...';
 
-  // Guardar en localStorage
-  saveComentario(nuevo);
+  try {
+    // Guardar en Firestore
+    await addDoc(collection(db, 'comentarios'), {
+      nombre,
+      calificacion,
+      comentario,
+      fecha: serverTimestamp()
+    });
 
-  // Mostrar en pantalla con animación
-  const container  = document.getElementById('listaComentarios');
-  const tarjeta    = crearTarjetaComentario(nuevo);
-  tarjeta.style.animation = 'fadeInUp 0.5s ease';
-  container.prepend(tarjeta);
+    // Mostrar en pantalla con animación
+    const container = document.getElementById('listaComentarios');
+    const tarjeta   = crearTarjetaComentario({ nombre, calificacion, comentario });
+    tarjeta.style.animation = 'fadeInUp 0.5s ease';
+    container.prepend(tarjeta);
 
-  // Limpiar formulario
-  document.getElementById('nombre').value       = '';
-  document.getElementById('comentario').value   = '';
-  document.getElementById('calificacion').value = '5';
+    // Limpiar formulario
+    document.getElementById('nombre').value       = '';
+    document.getElementById('comentario').value   = '';
+    document.getElementById('calificacion').value = '5';
 
-  // Mostrar mensaje de éxito
-  const successMsg = document.getElementById('successMsg');
-  successMsg.style.display = 'block';
-  setTimeout(() => {
-    successMsg.style.display = 'none';
-  }, 4000);
-}
+    // Mostrar mensaje de éxito
+    const successMsg = document.getElementById('successMsg');
+    successMsg.style.display = 'block';
+    setTimeout(() => { successMsg.style.display = 'none'; }, 4000);
+
+  } catch (error) {
+    console.error('Error al guardar comentario:', error);
+    alert('Hubo un error al enviar tu comentario. Intenta nuevamente.');
+  } finally {
+    btnSubmit.disabled    = false;
+    btnSubmit.textContent = 'Enviar Comentario';
+  }
+};
 
 
 // ──────────────────────────────────────
