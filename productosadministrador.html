@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Botica Santillán</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#0d5c35;--pl:#138a4f;--p2:#0a4428;
+  --ac:#e6f4ec;--ac2:#d0eadb;
+  --d:#c0392b;--i:#1a5fa8;--w:#d35400;
+  --text:#1a1a1a;--mu:#6b7280;--border:#d1e8da;
+  --white:#fff;--bg:#f4f8f5;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --sh2:0 4px 24px rgba(13,92,53,.15);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--p2) 0%,var(--p) 50%,var(--pl) 100%);
+  color:#fff;padding:0 28px;height:64px;
+  display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 20px rgba(0,0,0,.2);
+}
+.logo-wrap{width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+header p{font-size:11px;opacity:.75;margin-top:1px}
+.hi{flex:1}
+.dt{text-align:right;font-size:12px;opacity:.85;line-height:1.6;font-family:'DM Mono',monospace}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;box-shadow:var(--sh);gap:2px;padding:0 12px}
+nav button{padding:0 20px;height:50px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--mu);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;font-family:'DM Sans',sans-serif;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:7px}
+nav button.active{color:var(--p);border-bottom-color:var(--p);background:var(--ac)}
+nav button:hover:not(.active){background:#f9fafb;color:var(--text)}
+
+main{padding:20px 24px;max-width:1600px;margin:0 auto}
+.sec{display:none}.sec.active{display:block}
+
+/* CARDS */
+.card{background:var(--white);border-radius:14px;padding:22px;box-shadow:var(--sh);margin-bottom:18px;border:1px solid var(--border)}
+.card-title{font-size:16px;font-weight:700;color:var(--p);margin-bottom:18px;display:flex;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* STATS */
+.stat{background:var(--white);border-radius:14px;padding:20px 18px;box-shadow:var(--sh);border:1px solid var(--border);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--p);border-radius:14px 14px 0 0}
+.stat.gr::before{background:#059669}.stat.bl::before{background:#2563eb}.stat.or::before{background:#d97706}
+.stat .v{font-size:24px;font-weight:800;color:var(--text);font-family:'DM Mono',monospace;margin-top:4px}
+.stat.gr .v{color:#065f46}.stat.bl .v{color:#1e40af}.stat.or .v{color:#92400e}
+.stat .l{font-size:12px;color:var(--mu);margin-top:6px;font-weight:500}
+.stat-icon{font-size:28px;margin-bottom:4px}
+
+/* FORMS */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--mu);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;background:#fafcfa;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--text)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl);outline:none;background:var(--white);box-shadow:0 0 0 3px rgba(19,138,79,.1)}
+.fg textarea{resize:vertical;min-height:72px;line-height:1.5}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;transition:all .18s;display:inline-flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.bp{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(13,92,53,.3)}.bp:hover{background:var(--p2);transform:translateY(-1px)}
+.bs{background:#059669;color:#fff;box-shadow:0 2px 8px rgba(5,150,105,.3)}.bs:hover{background:#047857}
+.bd{background:var(--d);color:#fff}.bd:hover{background:#96281b}
+.bi{background:var(--i);color:#fff}.bi:hover{background:#1e40af}
+.bw{background:var(--w);color:#fff}.bw:hover{background:#b7450e}
+.bg2{background:var(--ac);color:var(--p);border:1.5px solid var(--border)}.bg2:hover{background:var(--ac2)}
+.sm{padding:7px 13px;font-size:12px}
+.btn:active{transform:scale(.97)}
+
+/* SEARCH BAR */
+.sb{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.sb input,.sb select{padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--white)}
+.sb input{flex:1;min-width:220px}
+.sb input:focus,.sb select:focus{border-color:var(--pl);outline:none}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:11px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--p);color:#fff}
+thead th{padding:12px 11px;text-align:left;font-weight:600;white-space:nowrap;font-size:12px;letter-spacing:.3px}
+tbody tr{border-bottom:1px solid #f0f5f2;transition:background .12s}
+tbody tr:hover{background:#f7fdf9}
+tbody td{padding:10px 11px;vertical-align:middle}
+tbody tr:last-child{border-bottom:none}
+
+/* BADGES */
+.bg3,.bb2,.bo2,.bp3,.bpurp{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bg3{background:#d1fae5;color:#065f46}
+.bb2{background:#dbeafe;color:#1e40af}
+.bo2{background:#fef3c7;color:#92400e}
+.bp3{background:#fce7f3;color:#9d174d}
+.bpurp{background:#ede9fe;color:#5b21b6}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.mo.open{display:flex}
+.modal{background:var(--white);border-radius:18px;padding:28px;max-width:720px;width:95%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);border:1px solid var(--border)}
+.modal-title{font-size:20px;font-weight:700;color:var(--p);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* BOLETA */
+.boleta{font-family:'DM Mono',monospace;font-size:12px;border:1px solid #ccc;padding:22px;border-radius:10px;background:#fff;max-width:360px;margin:0 auto}
+.boleta .c{text-align:center}
+.boleta hr{border:none;border-top:1px dashed #bbb;margin:10px 0}
+.boleta .r{display:flex;justify-content:space-between;margin:3px 0;font-size:12px}
+
+/* CARRITO */
+.vi{display:flex;align-items:center;gap:10px;background:var(--ac);border-radius:10px;padding:11px 13px;margin-bottom:8px;border:1px solid var(--border)}
+.vn{flex:1;font-weight:600;font-size:13px}
+
+/* PAGO */
+.pb{padding:11px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;background:var(--white);font-size:13px;font-weight:600;transition:all .2s;font-family:'DM Sans',sans-serif}
+.pb.sel{border-color:var(--pl);background:var(--ac);color:var(--p)}
+.pb:hover:not(.sel){border-color:#9ca3af}
+
+/* CHART */
+.cb{display:flex;flex-direction:column;gap:9px}
+.cbr{display:flex;align-items:center;gap:10px}
+.cbl{width:38px;font-size:11px;color:var(--mu);text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
+.cbt{flex:1;background:#e5e7eb;border-radius:5px;height:22px;overflow:hidden}
+.cbf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--p),var(--pl));transition:width .9s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding-left:8px;color:#fff;font-size:10px;font-weight:700;min-width:3px;font-family:'DM Mono',monospace}
+.cbv{width:72px;font-size:11px;font-weight:700;color:var(--p);flex-shrink:0;font-family:'DM Mono',monospace}
+
+/* ===== SCANNER ===== */
+.scan-section{background:linear-gradient(135deg,#0d5c35,#138a4f);border-radius:14px;padding:20px;margin-bottom:18px;color:#fff;border:1px solid var(--p)}
+.scan-section h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.scan-methods{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.scan-btn{padding:12px 18px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:8px}
+.scan-btn:hover,.scan-btn.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.6)}
+.scan-input-wrap{display:flex;gap:10px;align-items:center}
+.scan-input{flex:1;padding:12px 14px;border-radius:9px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:1px}
+.scan-input::placeholder{color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-weight:400;letter-spacing:0}
+.scan-input:focus{outline:none;border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.2)}
+
+/* CAMERA */
+#camera-wrap{display:none;position:relative;border-radius:12px;overflow:hidden;background:#000;margin-top:14px}
+#camera-wrap video{width:100%;max-height:260px;object-fit:cover;display:block}
+.cam-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cam-frame{width:220px;height:140px;border:3px solid #00ff88;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.4);animation:pulse-frame 1.5s ease-in-out infinite}
+@keyframes pulse-frame{0%,100%{border-color:#00ff88;box-shadow:0 0 0 9999px rgba(0,0,0,.4),0 0 20px rgba(0,255,136,.3)}50%{border-color:#fff;box-shadow:0 0 0 9999px rgba(0,0,0,.4),0 0 20px rgba(255,255,255,.3)}}
+.cam-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;white-space:nowrap}
+#stop-cam-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600}
+
+/* AI LOADING */
+.ai-loading{display:none;background:var(--ac);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;margin-top:14px}
+.ai-loading.show{display:block}
+.ai-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--pl);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-loading p{color:var(--p);font-weight:600;font-size:14px}
+.ai-loading small{color:var(--mu);font-size:12px}
+
+/* AI RESULT PREVIEW */
+.ai-result{display:none;background:#fff;border:2px solid var(--pl);border-radius:14px;padding:20px;margin-top:14px;position:relative}
+.ai-result.show{display:block}
+.ai-badge{position:absolute;top:-11px;left:16px;background:var(--pl);color:#fff;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px}
+.ai-result h3{font-size:17px;font-weight:700;color:var(--p);margin:8px 0 4px}
+.ai-field{margin-bottom:10px}
+.ai-field label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:3px}
+.ai-field p{font-size:13px;line-height:1.5;color:var(--text)}
+.ai-warning{background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-top:12px;display:flex;align-items:center;gap:8px}
+
+/* PRICE CONFIRM */
+.price-confirm{background:var(--ac);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px}
+.price-confirm h4{font-size:13px;font-weight:700;color:var(--p);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+
+/* NOTIF */
+.notif{position:fixed;top:78px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.notif-item{background:var(--white);border-radius:12px;padding:13px 18px;box-shadow:0 4px 20px rgba(0,0,0,.15);border-left:4px solid var(--pl);font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);max-width:320px;pointer-events:all}
+.notif-item.show{transform:translateX(0)}
+.notif-item.success{border-left-color:#059669}.notif-item.error{border-left-color:var(--d)}.notif-item.info{border-left-color:var(--i)}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:18px 0}
+.empty-state{text-align:center;padding:40px;color:var(--mu)}
+.empty-state .es-icon{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* DNI LOOKUP */
+.dni-wrap{position:relative}
+.dni-loader{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--pl);border-radius:50%;animation:spin .7s linear infinite;display:none}
+.dni-loader.show{display:block}
+.dni-found{background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:10px 13px;margin-top:6px;font-size:13px;display:none;align-items:center;gap:8px}
+.dni-found.show{display:flex}
+.dni-found .dni-name{font-weight:700;color:#065f46;flex:1}
+.dni-error{background:#fde8e8;border:1px solid #fca5a5;border-radius:8px;padding:8px 13px;margin-top:6px;font-size:12px;color:#991b1b;display:none}
+.dni-error.show{display:block}
+
+/* EDIT VENTA MODAL */
+.edit-venta-item{display:flex;align-items:center;gap:10px;background:var(--ac);border-radius:10px;padding:10px 13px;margin-bottom:8px;border:1px solid var(--border)}
+.evi-name{flex:1;font-weight:600;font-size:13px}
+.venta-anulada{opacity:.5;background:#fde8e8!important}
+.badge-anulada{background:#fde8e8;color:#991b1b;display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+
+@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr}.scan-methods{gap:8px}}
+@media print{body *{visibility:hidden}#pa,#pa *{visibility:visible}#pa{position:fixed;inset:0;background:#fff;padding:30px;display:block!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#0a4428 0%,#0d5c35 50%,#138a4f 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+">
+  <div style="background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center">
+    <div style="width:72px;height:72px;background:linear-gradient(135deg,#0d5c35,#138a4f);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px">💊</div>
+    <h1 style="font-size:22px;font-weight:800;color:#0d5c35;margin-bottom:4px">Botica Santillán</h1>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:28px">Sistema de Gestión Farmacéutica</p>
+    <div style="text-align:left;margin-bottom:14px">
+      <label style="font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Contraseña</label>
+      <div style="position:relative">
+        <input id="login-pass" type="password" placeholder="Ingresa tu contraseña..."
+          style="width:100%;padding:13px 44px 13px 14px;border:2px solid #d1e8da;border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border .2s"
+          onkeydown="if(event.key==='Enter') doLogin()"
+          onfocus="this.style.borderColor='#138a4f'"
+          onblur="this.style.borderColor='#d1e8da'">
+        <span onclick="togglePass()" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;user-select:none" id="eye-icon">👁</span>
+      </div>
+    </div>
+    <div id="login-error" style="display:none;background:#fde8e8;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991b1b;font-weight:600;margin-bottom:14px">
+      ❌ Contraseña incorrecta. Inténtalo de nuevo.
+    </div>
+    <button onclick="doLogin()" style="
+      width:100%;padding:14px;background:linear-gradient(135deg,#0d5c35,#138a4f);
+      color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;
+      cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s;
+      box-shadow:0 4px 16px rgba(13,92,53,.3)
+    " onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+      🔐 Ingresar
+    </button>
+    <p style="font-size:11px;color:#9ca3af;margin-top:20px">Acceso exclusivo para personal autorizado</p>
+  </div>
+</div>
+
+<div id="app-content" style="display:none">
+<header>
+  <div class="logo-wrap">💊</div>
+  <div class="hi">
+    <h1>Botica Santillán</h1>
+    <p>Sistema de Gestión Farmacéutica</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="dt" id="dt"></div>
+    <button onclick="doLogout()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 13px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif" title="Cerrar sesión">🔒 Salir</button>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="SS('inventario',this)">📦 Inventario</button>
+  <button onclick="SS('scan',this)">📷 Escanear & Agregar</button>
+  <button onclick="SS('agregar',this)">✏️ Agregar Manual</button>
+  <button onclick="SS('ventas',this)">🛒 Ventas</button>
+  <button onclick="SS('reportes',this)">📊 Reportes</button>
+</nav>
+
+<div class="notif" id="notif"></div>
+<main>
+
+<!-- ===== INVENTARIO ===== -->
+<div class="sec active" id="sec-inventario">
+  <div class="card">
+    <div class="card-title">📦 Inventario de Medicamentos</div>
+    <div class="sb">
+      <input id="si" placeholder="🔍 Buscar por nombre, laboratorio, composición, sección, indicación..." oninput="FI()">
+      <select onchange="FI()" id="ft">
+        <option value="">Todos los tipos</option>
+        <option value="generico">Genérico</option>
+        <option value="comercial">Comercial</option>
+      </select>
+      <select onchange="FI()" id="fs">
+        <option value="">Todas las secciones</option>
+        <option>Analgésicos</option><option>Antibióticos</option><option>Vitaminas</option>
+        <option>Gastroenterología</option><option>Cardiovascular</option><option>Respiratorio</option>
+        <option>Dermatología</option><option>Diabetes</option><option>Otros</option>
+      </select>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>#</th><th>Orden</th><th>Código</th><th>Laboratorio</th><th>Tipo</th><th>Producto</th><th>Composición</th><th>Sección</th><th>Indicación</th><th>Dosis/Uso</th><th>P.Unidad</th><th>P.Caja</th><th>Stock</th><th>Acciones</th></tr></thead>
+        <tbody id="tbi"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ESCANEAR ===== -->
+<div class="sec" id="sec-scan">
+  <div class="scan-section">
+    <h3>📷 Escanear Código de Barras</h3>
+    <div class="scan-methods">
+      <button class="scan-btn" id="btn-cam" onclick="toggleCamera()">📸 Cámara PC/Tablet</button>
+      <button class="scan-btn" id="btn-usb" onclick="focusBarcodeInput()">🔫 Lector USB</button>
+      <button class="scan-btn" id="btn-cel" onclick="toggleCelularQR()">📱 Escanear con Celular</button>
+      <button class="scan-btn" id="btn-manual" onclick="toggleManualInput()">⌨️ Código Manual</button>
+    </div>
+    <!-- Info celular -->
+    <div id="celular-info" style="display:none;background:rgba(255,255,255,.12);border-radius:12px;padding:16px;margin-top:12px;border:1px solid rgba(255,255,255,.25)">
+      <p style="font-weight:700;font-size:14px;margin-bottom:8px">📱 Conectar tu celular como escáner:</p>
+      <p style="font-size:13px;opacity:.9;margin-bottom:10px">1. Abre la cámara de tu celular y escanea el QR de abajo<br>2. Se abrirá una página para escanear desde tu celular<br>3. El código escaneado aparecerá aquí automáticamente</p>
+      <div id="celular-qr-wrap" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-top:4px">
+        <canvas id="qr-canvas" width="150" height="150"></canvas>
+        <p style="text-align:center;font-size:11px;color:#555;margin-top:6px;font-family:monospace" id="celular-url-text"></p>
+      </div>
+      <div style="margin-top:10px;font-size:12px;opacity:.8">💡 O comparte este link con tu celular: <span id="celular-url-link" style="font-family:monospace;text-decoration:underline;cursor:pointer" onclick="copiarURL()"></span></div>
+    </div>
+    <div class="scan-input-wrap" style="margin-top:14px">
+      <input class="scan-input" id="barcode-input" placeholder="Apunta el lector USB aquí o escribe el código de barras..." 
+             onkeydown="handleBarcodeKey(event)" autofocus>
+      <button class="btn" style="background:rgba(255,255,255,.2);color:#fff;border:2px solid rgba(255,255,255,.3)" onclick="searchBarcode()">🔍 Buscar</button>
+    </div>
+    <!-- Cámara html5-qrcode -->
+    <div id="camera-wrap" style="display:none;margin-top:14px;border-radius:14px;overflow:hidden;position:relative;background:#000">
+      <div id="qr-reader" style="width:100%;border-radius:14px;overflow:hidden"></div>
+      <button id="stop-cam-btn" onclick="stopCamera()" style="position:absolute;top:10px;right:10px;z-index:10;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700">✕ Cerrar</button>
+    </div>
+  </div>
+
+  <!-- AI LOADING -->
+  <div class="ai-loading" id="ai-loading">
+    <div class="ai-spinner" style="margin:0 auto 12px"></div>
+    <p>🤖 Consultando Gemini IA sobre el medicamento...</p>
+    <small id="ai-loading-code">Analizando código: ---</small>
+  </div>
+
+  <!-- AI RESULT -->
+  <div class="ai-result" id="ai-result">
+    <div class="ai-badge">✨ Información completada por IA</div>
+    <div style="margin-top:8px">
+      <div class="g2" style="margin-bottom:14px">
+        <div class="ai-field"><label>Nombre del Producto</label><p id="air-nombre" style="font-weight:700;font-size:16px;color:var(--p)"></p></div>
+        <div class="ai-field"><label>Composición</label><p id="air-comp"></p></div>
+        <div class="ai-field"><label>Laboratorio</label><p id="air-lab"></p></div>
+        <div class="ai-field"><label>Tipo</label><p id="air-tipo"></p></div>
+        <div class="ai-field"><label>Sección</label><p id="air-sec"></p></div>
+        <div class="ai-field"><label>Código de Barras</label><p id="air-code" style="font-family:'DM Mono',monospace"></p></div>
+      </div>
+      <div class="ai-field"><label>Para qué sirve</label><p id="air-ind"></p></div>
+      <div class="ai-field" style="margin-top:10px"><label>Modo de uso y dosificación</label><p id="air-dos"></p></div>
+
+      <!-- PRICE CONFIRM -->
+      <div class="price-confirm">
+        <h4>💰 Confirmar Precios y Stock (obligatorio)</h4>
+        <div class="g3">
+          <div class="fg" style="margin-bottom:0">
+            <label>Precio por Unidad (S/.)</label>
+            <input type="number" id="air-punit" placeholder="0.00" step="0.01">
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Precio por Caja (S/.)</label>
+            <input type="number" id="air-pcaja" placeholder="0.00" step="0.01">
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label>📦 Stock inicial (unidades)</label>
+            <input type="number" id="air-stock" placeholder="Ej: 100" min="0" step="1">
+          </div>
+        </div>
+        <div class="ai-warning" style="margin-top:12px">
+          ⚠️ Los precios no los puede obtener la IA. Ingrésalos según tu proveedor antes de guardar.
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn bp" onclick="saveAIResult()">💾 Guardar Medicamento</button>
+        <button class="btn bg2" onclick="editAIResult()">✏️ Editar Info</button>
+        <button class="btn bd sm" onclick="cancelAIResult()">✕ Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODE -->
+  <div id="edit-ai-form" style="display:none">
+    <div class="card">
+      <div class="card-title">✏️ Editar Información del Medicamento</div>
+      <div class="g3">
+        <div class="fg"><label>N° Orden</label><input id="e-orden" placeholder="Auto"></div>
+        <div class="fg"><label>Laboratorio</label><input id="e-lab"></div>
+        <div class="fg"><label>Tipo</label><select id="e-tipo"><option value="comercial">Comercial</option><option value="generico">Genérico</option></select></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Nombre del Producto</label><input id="e-nombre"></div>
+        <div class="fg"><label>Composición</label><input id="e-comp"></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label>Sección</label><select id="e-sec"><option>Analgésicos</option><option>Antibióticos</option><option>Vitaminas</option><option>Gastroenterología</option><option>Cardiovascular</option><option>Respiratorio</option><option>Dermatología</option><option>Diabetes</option><option>Otros</option></select></div>
+        <div class="fg"><label>Precio Unidad (S/.)</label><input type="number" id="e-punit" step="0.01"></div>
+        <div class="fg"><label>Precio Caja (S/.)</label><input type="number" id="e-pcaja" step="0.01"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Indicación</label><textarea id="e-ind"></textarea></div>
+        <div class="fg"><label>Dosificación</label><textarea id="e-dos"></textarea></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn bp" onclick="saveEditedResult()">💾 Guardar</button>
+        <button class="btn bg2" onclick="cancelEdit()">✕ Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AGREGAR MANUAL ===== -->
+<div class="sec" id="sec-agregar">
+  <div class="card">
+    <div class="card-title">✏️ Agregar Medicamento</div>
+
+    <!-- BUSQUEDA IA POR NOMBRE -->
+    <div style="background:linear-gradient(135deg,#0d5c35,#138a4f);border-radius:14px;padding:18px;margin-bottom:20px">
+      <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:10px">🤖 Buscar con IA — escribe el nombre y la IA completa todo</div>
+      <div style="display:flex;gap:10px">
+        <input id="ai-search-nombre" placeholder="Ej: Ibuprofeno 400mg, Amoxicilina, Omeprazol..."
+          style="flex:1;padding:12px 14px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;outline:none"
+          onkeydown="if(event.key==='Enter') buscarConIA()"
+          onfocus="this.style.borderColor='rgba(255,255,255,.8)'"
+          onblur="this.style.borderColor='rgba(255,255,255,.3)'"
+          placeholder="Ej: Ibuprofeno 400mg, Amoxicilina 500mg...">
+        <button onclick="buscarConIA()" id="btn-buscar-ia"
+          style="padding:12px 20px;background:#fff;color:#0d5c35;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif">
+          🔍 Buscar
+        </button>
+      </div>
+      <div id="ia-search-status" style="margin-top:10px;font-size:13px;color:rgba(255,255,255,.85)"></div>
+    </div>
+
+    <div class="g3">
+      <div class="fg"><label>N° Orden</label><input id="no" placeholder="Ej: MED-045"></div>
+      <div class="fg"><label>Laboratorio</label><input id="nl" placeholder="Ej: Bayer, Pfizer..."></div>
+      <div class="fg"><label>Tipo</label><select id="nt"><option value="comercial">Comercial</option><option value="generico">Genérico</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Nombre del Producto</label><input id="nn" placeholder="Ej: Ibuprofeno 400mg"></div>
+      <div class="fg"><label>Composición</label><input id="nc" placeholder="Ej: Ibuprofeno 400mg c/tab"></div>
+    </div>
+    <div class="fg"><label>Código de Barras (opcional)</label><input id="nbar" placeholder="Ej: 7501234567890" style="font-family:'DM Mono',monospace"></div>
+    <div class="g3">
+      <div class="fg"><label>Sección</label><select id="ns"><option>Analgésicos</option><option>Antibióticos</option><option>Vitaminas</option><option>Gastroenterología</option><option>Cardiovascular</option><option>Respiratorio</option><option>Dermatología</option><option>Diabetes</option><option>Otros</option></select></div>
+      <div class="fg"><label>Precio Unidad (S/.)</label><input type="number" id="npu" placeholder="0.00" step="0.01"></div>
+      <div class="fg"><label>Precio Caja (S/.)</label><input type="number" id="npc" placeholder="0.00" step="0.01"></div>
+    </div>
+    <div class="fg"><label>📦 Stock Inicial (unidades disponibles)</label><input type="number" id="nstk" placeholder="Ej: 100" min="0" step="1" style="max-width:200px"></div>
+    <div class="g2">
+      <div class="fg"><label>Para qué sirve (Indicación)</label><textarea id="ni" placeholder="Descripción de usos..."></textarea></div>
+      <div class="fg"><label>Modo de Uso y Dosificación</label><textarea id="nd" placeholder="Ej: Adultos: 1 tab c/8hrs..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn bp" onclick="AM()">💾 Guardar Medicamento</button>
+      <button class="btn bg2" onclick="LA()">🗑 Limpiar</button>
+    </div>
+    <div id="ma" style="margin-top:12px"></div>
+  </div>
+  <div class="card"><div class="card-title">👁 Vista Previa</div><div id="pa2" style="color:var(--mu);font-style:italic">Completa el formulario para ver la vista previa...</div></div>
+</div>
+
+<!-- ===== VENTAS ===== -->
+<div class="sec" id="sec-ventas">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🛒 Nueva Venta</div>
+      <div class="fg">
+        <label>Buscar Producto</label>
+        <input id="vs" placeholder="Escribe el nombre del producto..." oninput="BV()">
+        <div id="vsu" style="background:#fff;border:1px solid var(--border);border-radius:10px;margin-top:5px;max-height:200px;overflow-y:auto;display:none;position:relative;z-index:10;box-shadow:var(--sh)"></div>
+      </div>
+      <div id="ci"></div>
+      <div style="background:var(--ac);border-radius:12px;padding:14px 16px;margin-top:12px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:800;color:var(--p)"><span>TOTAL:</span><span id="tv" style="font-family:'DM Mono',monospace">S/ 0.00</span></div>
+      </div>
+      <div style="margin-top:18px">
+        <label style="font-size:12px;font-weight:700;color:var(--mu);display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px">💳 Método de Pago</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <div class="pb" id="pyape" onclick="TP('yape')">📱 Yape</div>
+          <div class="pb" id="pefect" onclick="TP('efectivo')">💵 Efectivo</div>
+          <div class="pb" id="pmixto" onclick="TP('mixto')">🔀 Yape + Efectivo</div>
+        </div>
+        <div id="pmf" style="display:none">
+          <div class="g2">
+            <div class="fg"><label>Monto Yape (S/.)</label><input type="number" id="my" placeholder="0.00" step="0.01" oninput="CM()"></div>
+            <div class="fg"><label>Monto Efectivo (S/.)</label><input type="number" id="me" placeholder="0.00" step="0.01" oninput="CM()"></div>
+          </div>
+          <div id="mm" style="font-size:13px;font-weight:600;margin-top:-8px;margin-bottom:10px"></div>
+        </div>
+      </div>
+      <button class="btn bs" style="width:100%;justify-content:center;font-size:15px;padding:14px" onclick="PV()">✅ Procesar Venta</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🧾 Comprobante</div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:700;color:var(--mu);display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px">Tipo</label>
+        <div style="display:flex;gap:20px">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px"><input type="radio" name="comp" value="boleta" checked> 🧾 Boleta</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px"><input type="radio" name="comp" value="factura"> 🏢 Factura (RUC)</label>
+        </div>
+      </div>
+      <div class="fg">
+        <label>DNI (8 dígitos) / RUC (11 dígitos) <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--pl)">— busca el nombre automáticamente</span></label>
+        <div class="dni-wrap">
+          <input id="cr" placeholder="Ej: 12345678  ó  20123456789" oninput="onDNIInput()" maxlength="11" style="font-family:'DM Mono',monospace;letter-spacing:.5px;padding-right:36px">
+          <div class="dni-loader" id="dni-loader"></div>
+        </div>
+        <div class="dni-found" id="dni-found">
+          <span>✅</span>
+          <span class="dni-name" id="dni-name-result"></span>
+          <button onclick="applyDNI()" class="btn bp sm" style="padding:5px 11px;font-size:11px">Usar →</button>
+        </div>
+        <div class="dni-error" id="dni-error"></div>
+      </div>
+      <div class="fg"><label>Nombre del Cliente</label><input id="cn" placeholder="Se autocompleta al buscar DNI/RUC, o escribe manualmente"></div>
+      <div id="bprev"><div class="boleta"><div class="c" style="font-weight:800;font-size:15px">⚕️ BOTICA SANTILLÁN</div><div class="c" style="font-size:11px;color:#666">RUC: 10123456789 | Chiclayo, Lambayeque</div><hr><div class="c" style="font-size:12px;color:#aaa;padding:12px 0">Procesa una venta para generar el comprobante</div></div></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn bi sm" onclick="IB()">🖨️ Imprimir</button>
+        <button class="btn bw sm" onclick="LV()">🗑 Nueva Venta</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Ventas Recientes</div>
+    <div class="tw"><table><thead><tr><th>Fecha / Hora</th><th>Comprobante</th><th>Cliente</th><th>RUC/DNI</th><th>Productos</th><th>Pago</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="htb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ===== REPORTES ===== -->
+<div class="sec" id="sec-reportes">
+  <div class="g4" style="margin-bottom:20px">
+    <div class="stat gr"><div class="stat-icon">📅</div><div class="v" id="sd">S/ 0.00</div><div class="l">Ventas Hoy</div></div>
+    <div class="stat bl"><div class="stat-icon">📆</div><div class="v" id="ss">S/ 0.00</div><div class="l">Esta Semana</div></div>
+    <div class="stat or"><div class="stat-icon">🗓</div><div class="v" id="sm2">S/ 0.00</div><div class="l">Este Mes</div></div>
+    <div class="stat"><div class="stat-icon">📊</div><div class="v" id="sa">S/ 0.00</div><div class="l">Este Año</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📊 Últimos 7 Días</div><div class="cb" id="cd"></div></div>
+    <div class="card"><div class="card-title">📊 Por Mes (Año Actual)</div><div class="cb" id="cm3"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💳 Por Método de Pago</div>
+    <div class="g3">
+      <div class="stat gr"><div class="stat-icon">📱</div><div class="v" id="syt">S/ 0.00</div><div class="l">Total Yape</div></div>
+      <div class="stat bl"><div class="stat-icon">💵</div><div class="v" id="set2">S/ 0.00</div><div class="l">Total Efectivo</div></div>
+      <div class="stat or"><div class="stat-icon">🔀</div><div class="v" id="smt">S/ 0.00</div><div class="l">Total Mixto</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Historial Completo</div>
+    <div class="tw"><table><thead><tr><th>Fecha</th><th>Comprobante</th><th>Cliente</th><th>RUC/DNI</th><th>Productos</th><th>Pago</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="atb"></tbody></table></div>
+  </div>
+</div>
+</main>
+
+<!-- MODAL DETALLE -->
+<div class="mo" id="md">
+  <div class="modal">
+    <div class="modal-title" id="mt"></div>
+    <div id="mc"></div>
+    <div class="mf">
+      <button class="btn bd sm" onclick="ED()">🗑 Eliminar</button>
+      <button class="btn bg2" onclick="CM2('md')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR VENTA -->
+<div class="mo" id="modal-edit-venta">
+  <div class="modal" style="max-width:800px">
+    <div class="modal-title">✏️ Editar Venta</div>
+    <div id="ev-content">
+      <div class="g3" style="margin-bottom:16px">
+        <div class="fg"><label>Comprobante</label><select id="ev-comp"><option value="boleta">Boleta</option><option value="factura">Factura</option></select></div>
+        <div class="fg"><label>DNI / RUC</label><input id="ev-ruc" placeholder="DNI o RUC" maxlength="11" oninput="onDNIInputEdit()" style="font-family:'DM Mono',monospace"></div>
+        <div class="fg"><label>Nombre del Cliente</label><input id="ev-cliente" placeholder="Nombre del cliente"></div>
+      </div>
+      <div class="dni-found" id="ev-dni-found" style="margin-bottom:12px">
+        <span>✅</span><span class="dni-name" id="ev-dni-name"></span>
+        <button onclick="applyDNIEdit()" class="btn bp sm" style="padding:5px 11px;font-size:11px">Usar →</button>
+      </div>
+      <div class="dni-error" id="ev-dni-error" style="margin-bottom:12px"></div>
+      <div style="margin-bottom:10px"><label style="font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px">Productos en la venta</label></div>
+      <div id="ev-items"></div>
+      <div style="background:var(--ac);border-radius:10px;padding:12px 16px;margin:12px 0;display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--p)">
+        <span>TOTAL:</span><span id="ev-total" style="font-family:'DM Mono',monospace">S/ 0.00</span>
+      </div>
+      <div class="fg"><label>Método de Pago</label><select id="ev-pago">
+        <option value="yape">📱 Yape</option>
+        <option value="efectivo">💵 Efectivo</option>
+        <option value="mixto">🔀 Mixto (Yape + Efectivo)</option>
+      </select></div>
+    </div>
+    <div class="mf">
+      <button class="btn bp" onclick="saveEditVenta()">💾 Guardar Cambios</button>
+      <button class="btn bd sm" onclick="anularVenta()">🚫 Anular Venta</button>
+      <button class="btn bg2" onclick="CM2('modal-edit-venta')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REIMPRIMIR BOLETA -->
+<div class="mo" id="modal-reimp">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">🖨️ Reimprimir Comprobante</div>
+    <div id="reimp-content"></div>
+    <div class="mf">
+      <button class="btn bi" onclick="reimprimirBoleta()">🖨️ Imprimir</button>
+      <button class="btn bg2" onclick="CM2('modal-reimp')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div id="pa" style="display:none"></div>
+
+<script>
+// ===================== DATA =====================
+let meds = JSON.parse(localStorage.getItem('bsm') || 'null') || [];
+let vts = JSON.parse(localStorage.getItem('bsv') || '[]');
+let cart = [], ps = '', mdid = null, aiData = null;
+let cameraStream = null, quaggaRunning = false, celularPollingVar = null, celularSessionVar = null, html5QrCodeVar = null;
+
+function SD() {
+  localStorage.setItem('bsm', JSON.stringify(meds));
+  localStorage.setItem('bsv', JSON.stringify(vts));
+}
+
+// ===================== NOTIF =====================
+function notif(msg, type='success') {
+  const wrap = document.getElementById('notif');
+  const el = document.createElement('div');
+  el.className = `notif-item ${type}`;
+  el.innerHTML = (type==='success'?'✅':type==='error'?'❌':'ℹ️') + ' ' + msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3500);
+}
+
+// ===================== NAV =====================
+function SS(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+  if(id === 'inventario') RI();
+  if(id === 'reportes') RR();
+  
+  if(id !== 'scan') stopCamera();
+  if(id === 'scan') setTimeout(() => document.getElementById('barcode-input')?.focus(), 200);
+}
+
+// ===================== DATETIME =====================
+function UT() {
+  document.getElementById('dt').innerHTML =
+    new Date().toLocaleDateString('es-PE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) +
+    '<br>' + new Date().toLocaleTimeString('es-PE');
+}
+setInterval(UT, 1000); UT();
+
+// ===================== INVENTARIO =====================
+function stockBadge(s) {
+  s = s||0;
+  if(s <= 0)  return `<span style="background:#fde8e8;color:#991b1b;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700">⚠️ Agotado</span>`;
+  if(s <= 10) return `<span style="background:#fef3c7;color:#92400e;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700">⚡ ${s}</span>`;
+  return `<span style="background:#d1fae5;color:#065f46;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700">${s}</span>`;
+}
+
+function RI(l) {
+  l = l || meds;
+  // Migrar meds sin stock
+  l.forEach(m => { if(m.stock === undefined) m.stock = 0; });
+  const tb = document.getElementById('tbi');
+  if(!l.length) {
+    tb.innerHTML = '<tr><td colspan="14"><div class="empty-state"><div class="es-icon">📭</div><p>No se encontraron medicamentos</p></div></td></tr>';
+    return;
+  }
+  tb.innerHTML = l.map((m,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><b>${m.orden}</b></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">${m.barcode||'—'}</td>
+      <td>${m.lab}</td>
+      <td><span class="${m.tipo==='comercial'?'bb2':'bg3'}">${m.tipo==='comercial'?'Comercial':'Genérico'}</span></td>
+      <td><b style="color:var(--p)">${m.nombre}</b></td>
+      <td style="max-width:140px;white-space:normal;font-size:12px;color:#555">${m.composicion}</td>
+      <td><span class="bpurp">${m.seccion}</span></td>
+      <td style="max-width:150px;white-space:normal;font-size:12px">${m.indicacion.slice(0,65)}...</td>
+      <td style="max-width:130px;white-space:normal;font-size:12px">${m.dosis.slice(0,55)}...</td>
+      <td style="font-weight:700;color:var(--p);white-space:nowrap;font-family:'DM Mono',monospace">S/ ${parseFloat(m.punit).toFixed(2)}</td>
+      <td style="font-weight:700;color:#d97706;white-space:nowrap;font-family:'DM Mono',monospace">S/ ${parseFloat(m.pcaja).toFixed(2)}</td>
+      <td style="white-space:nowrap">
+        ${stockBadge(m.stock)}
+        <div style="display:flex;gap:3px;margin-top:4px">
+          <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:4px 8px;font-size:11px" onclick="ajustarStock(${m.id},-1)" title="Quitar 1">−</button>
+          <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:4px 8px;font-size:11px" onclick="ajustarStock(${m.id},1)" title="Agregar 1">+</button>
+          <button class="btn sm bg2" style="padding:4px 8px;font-size:11px" onclick="setStock(${m.id})" title="Establecer cantidad">✏️</button>
+        </div>
+      </td>
+      <td style="white-space:nowrap">
+        <button class="btn bi sm" onclick="VD(${m.id})">👁</button>
+        <button class="btn bd sm" onclick="EM(${m.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function ajustarStock(id, d) {
+  const m = meds.find(x=>x.id===id); if(!m) return;
+  m.stock = Math.max(0, (m.stock||0) + d);
+  SD(); RI();
+}
+
+function setStock(id) {
+  const m = meds.find(x=>x.id===id); if(!m) return;
+  const val = prompt(`Stock actual de "${m.nombre}": ${m.stock||0}\n\nIngresa la nueva cantidad:`);
+  if(val === null) return;
+  const n = parseInt(val);
+  if(isNaN(n) || n < 0) { notif('Cantidad inválida', 'error'); return; }
+  m.stock = n;
+  SD(); RI();
+  notif(`Stock de ${m.nombre} actualizado a ${n} unidades`);
+}
+
+function FI() {
+  const q = document.getElementById('si').value.toLowerCase();
+  const t = document.getElementById('ft').value;
+  const s = document.getElementById('fs').value;
+  RI(meds.filter(m => {
+    const x = [m.nombre,m.lab,m.composicion,m.seccion,m.indicacion,m.dosis,m.orden,m.tipo,m.barcode||''].join(' ').toLowerCase();
+    return (!q||x.includes(q)) && (!t||m.tipo===t) && (!s||m.seccion===s);
+  }));
+}
+
+function VD(id) {
+  const m = meds.find(x=>x.id===id); if(!m) return;
+  mdid = id;
+  document.getElementById('mt').textContent = m.nombre;
+  document.getElementById('mc').innerHTML = `
+    <div class="g2" style="margin-bottom:14px">
+      <p><b>N° Orden:</b> ${m.orden}</p>
+      <p><b>Laboratorio:</b> ${m.lab}</p>
+      <p><b>Tipo:</b> <span class="${m.tipo==='comercial'?'bb2':'bg3'}">${m.tipo}</span></p>
+      <p><b>Sección:</b> <span class="bpurp">${m.seccion}</span></p>
+      ${m.barcode?`<p><b>Código de Barras:</b> <span style="font-family:'DM Mono',monospace">${m.barcode}</span></p>`:''}
+      <p><b>Composición:</b> ${m.composicion}</p>
+    </div>
+    <div style="background:var(--ac);border-radius:10px;padding:14px;margin-bottom:12px">
+      <b>✅ Para qué sirve:</b><br><span style="font-size:13px;line-height:1.6">${m.indicacion}</span>
+    </div>
+    <div style="background:#fef3c7;border-radius:10px;padding:14px;margin-bottom:16px">
+      <b>💊 Dosificación:</b><br><span style="font-size:13px;line-height:1.6">${m.dosis}</span>
+    </div>
+    <div class="g2">
+      <div style="background:#d1fae5;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;color:#065f46;font-family:'DM Mono',monospace">S/ ${parseFloat(m.punit).toFixed(2)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">Por Unidad</div>
+      </div>
+      <div style="background:#dbeafe;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-weight:800;color:#1e40af;font-family:'DM Mono',monospace">S/ ${parseFloat(m.pcaja).toFixed(2)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">Por Caja</div>
+      </div>
+    </div>`;
+  document.getElementById('md').classList.add('open');
+}
+
+function EM(id) {
+  if(confirm('¿Eliminar este medicamento?')) {
+    meds = meds.filter(m=>m.id!==id); SD(); RI();
+    notif('Medicamento eliminado');
+  }
+}
+function ED() {
+  if(confirm('¿Eliminar este medicamento?')) {
+    meds = meds.filter(m=>m.id!==mdid); SD(); RI(); CM2('md');
+    notif('Medicamento eliminado');
+  }
+}
+function CM2(id) { document.getElementById(id).classList.remove('open'); }
+
+// ===================== BARCODE SCANNER =====================
+let barcodeBuffer = '';
+let barcodeTimer = null;
+
+document.addEventListener('keydown', function(e) {
+  // Only capture when scan section is active and not in an input
+  if(!document.getElementById('sec-scan').classList.contains('active')) return;
+  const active = document.activeElement;
+  if(active && active.id === 'barcode-input') return; // let the input handle it
+});
+
+function handleBarcodeKey(e) {
+  if(e.key === 'Enter') {
+    e.preventDefault();
+    searchBarcode();
+  }
+}
+
+function searchBarcode() {
+  const code = document.getElementById('barcode-input').value.trim();
+  if(!code) return;
+  // Check if already in inventory
+  const existing = meds.find(m => m.barcode === code);
+  if(existing) {
+    notif(`"${existing.nombre}" ya está en el inventario`, 'info');
+    document.getElementById('barcode-input').value = '';
+    return;
+  }
+  lookupBarcode(code);
+  document.getElementById('barcode-input').value = '';
+}
+
+async function lookupBarcode(code) {
+  document.getElementById('ai-result').classList.remove('show');
+  document.getElementById('edit-ai-form').style.display = 'none';
+  document.getElementById('ai-loading').classList.add('show');
+  document.getElementById('ai-loading-code').textContent = 'Buscando código: ' + code;
+  const loadP = document.getElementById('ai-loading').querySelector('p');
+
+  let nombreEncontrado = null;
+
+  // 1. Buscar en Open Food Facts (cubre muchos productos con código EAN peruano)
+  loadP.textContent = '🔍 Buscando en base de datos de productos...';
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
+    if(r.ok) {
+      const d = await r.json();
+      if(d.status === 1 && d.product) {
+        const p = d.product;
+        nombreEncontrado = p.product_name_es || p.product_name || p.generic_name || null;
+      }
+    }
+  } catch(e) {}
+
+  // 2. Buscar en Open Beauty Facts (cosméticos y algunos medicamentos)
+  if(!nombreEncontrado) {
+    try {
+      const r = await fetch(`https://world.openbeautyfacts.org/api/v0/product/${code}.json`);
+      if(r.ok) {
+        const d = await r.json();
+        if(d.status === 1 && d.product?.product_name) {
+          nombreEncontrado = d.product.product_name;
+        }
+      }
+    } catch(e) {}
+  }
+
+  // 3. Si encontramos el nombre real, usarlo con la IA para completar datos farmacéuticos
+  if(nombreEncontrado) {
+    loadP.textContent = `✅ Producto encontrado: "${nombreEncontrado}" — consultando IA...`;
+    await askAI(code, nombreEncontrado);
+  } else {
+    // 4. No encontrado en base de datos — pedir nombre al usuario
+    document.getElementById('ai-loading').classList.remove('show');
+    mostrarBuscadorManual(code);
+  }
+}
+
+function mostrarBuscadorManual(code) {
+  // Mostrar panel para que el usuario ingrese el nombre
+  let panel = document.getElementById('barcode-not-found');
+  if(!panel) {
+    panel = document.createElement('div');
+    panel.id = 'barcode-not-found';
+    panel.style.cssText = 'background:#fff;border-radius:14px;padding:20px;margin-top:14px;box-shadow:0 4px 20px rgba(0,0,0,.1);border:2px solid #fde68a';
+    document.getElementById('ai-result').parentNode.insertBefore(panel, document.getElementById('ai-result'));
+  }
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-weight:700;color:#92400e;margin-bottom:6px">⚠️ Código <span style="font-family:monospace">${code}</span> no está en la base de datos</div>
+    <p style="font-size:13px;color:#555;margin-bottom:14px">Escribe el nombre del medicamento y la IA completará todos los datos automáticamente:</p>
+    <div style="display:flex;gap:10px">
+      <input id="barcode-nombre-input" placeholder="Ej: Amoxicilina 500mg, Omeprazol 20mg..."
+        style="flex:1;padding:11px 14px;border:2px solid #d1e8da;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none"
+        onkeydown="if(event.key==='Enter') buscarNombreDesdeBarcode('${code}')"
+        onfocus="this.style.borderColor='#138a4f'" onblur="this.style.borderColor='#d1e8da'">
+      <button onclick="buscarNombreDesdeBarcode('${code}')"
+        style="padding:11px 18px;background:#0d5c35;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
+        🤖 Buscar con IA
+      </button>
+    </div>
+    <div id="barcode-nombre-status" style="margin-top:10px;font-size:13px;color:#6b7280"></div>
+  `;
+  setTimeout(() => document.getElementById('barcode-nombre-input')?.focus(), 100);
+  notif('Código no encontrado — escribe el nombre del medicamento', 'info');
+}
+
+async function buscarNombreDesdeBarcode(code) {
+  const nombre = document.getElementById('barcode-nombre-input')?.value.trim();
+  if(!nombre) { notif('Escribe el nombre del medicamento', 'error'); return; }
+  const status = document.getElementById('barcode-nombre-status');
+  status.innerHTML = '🤖 Consultando IA...';
+  document.getElementById('ai-loading').classList.add('show');
+  document.getElementById('barcode-not-found').style.display = 'none';
+  await askAI(code, nombre);
+}
+
+async function askAI(code, nombreReal) {
+  const loadP = document.getElementById('ai-loading').querySelector('p');
+  loadP.textContent = `🤖 Groq IA completando datos de "${nombreReal}"...`;
+
+  const prompt = `Eres un experto farmacéutico peruano. Dame información farmacéutica completa de este medicamento: "${nombreReal}".
+El código de barras del producto es: ${code}.
+Responde ÚNICAMENTE con este JSON exacto (sin markdown, sin texto adicional):
+{"nombre":"${nombreReal}","composicion":"Principio activo y concentración exacta","laboratorio":"Laboratorio fabricante más común en Perú","tipo":"generico o comercial","seccion":"Analgésicos|Antibióticos|Vitaminas|Gastroenterología|Cardiovascular|Respiratorio|Dermatología|Diabetes|Otros","indicacion":"Para qué sirve exactamente, 2-3 oraciones detalladas","dosis":"Modo de uso y dosificación completa para adultos y niños si aplica","confianza":"alta|media|baja"}`;
+
+  try {
+    const info = await askGroq(prompt);
+    info._source = 'Groq';
+    info._nombreReal = nombreReal;
+    document.getElementById('ai-loading').classList.remove('show');
+    // Ocultar panel de búsqueda manual si existe
+    const p = document.getElementById('barcode-not-found');
+    if(p) p.style.display = 'none';
+    showAIResult(code, info);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('ai-loading').classList.remove('show');
+    notif('Error al consultar la IA. Intenta de nuevo.', 'error');
+    mostrarBuscadorManual(code);
+  }
+}
+
+
+const GROQ_KEY = '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';
+
+async function askGroq(prompt) {
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.1,
+      max_tokens: 1000
+    })
+  });
+  if(!r.ok) throw new Error('Groq error ' + r.status);
+  const d = await r.json();
+  const txt = d.choices?.[0]?.message?.content || '';
+  const m = txt.match(/\{[\s\S]*?\}/);
+  if(!m) throw new Error('Sin JSON');
+  return JSON.parse(m[0]);
+}
+
+function showAIResult(code, info) {
+  aiData = { ...info, barcode: code };
+
+  document.getElementById('air-nombre').textContent = info.nombre || '—';
+  document.getElementById('air-comp').textContent = info.composicion || '—';
+  document.getElementById('air-lab').textContent = info.laboratorio || '—';
+  document.getElementById('air-tipo').innerHTML = `<span class="${info.tipo==='comercial'?'bb2':'bg3'}">${info.tipo==='comercial'?'Comercial':'Genérico'}</span>`;
+  document.getElementById('air-sec').innerHTML = `<span class="bpurp">${info.seccion||'—'}</span>`;
+  document.getElementById('air-code').textContent = code;
+  document.getElementById('air-ind').textContent = info.indicacion || '—';
+  document.getElementById('air-dos').textContent = info.dosis || '—';
+  document.getElementById('air-punit').value = '';
+  document.getElementById('air-pcaja').value = '';
+  document.getElementById('air-stock').value = '';
+
+  // Badge IA fuente
+  const badge = document.querySelector('.ai-badge');
+  if(badge) {
+    badge.innerHTML = `✨ Información completada por <b>${info._source || 'Gemini IA'}</b>`;
+  }
+
+  // Advertencia de confianza
+  const warn = document.querySelector('.ai-warning');
+  const confColor = info.confianza === 'alta' ? '#065f46' : info.confianza === 'baja' ? '#991b1b' : '#92400e';
+  const confIcon = info.confianza === 'alta' ? '✅' : info.confianza === 'baja' ? '⚠️' : '🔶';
+  const confTxt = info.confianza === 'alta' ? 'Alta confianza' : info.confianza === 'baja' ? 'Baja confianza — verifica' : 'Confianza media';
+  warn.style.borderColor = info.confianza === 'alta' ? '#6ee7b7' : info.confianza === 'baja' ? '#fca5a5' : '#fcd34d';
+  warn.innerHTML = `${confIcon} <b style="color:${confColor}">${confTxt}.</b> ${info.nota ? info.nota + ' ' : ''}Los precios deben ingresarse y confirmarse manualmente.`;
+
+  document.getElementById('ai-result').classList.add('show');
+  document.getElementById('ai-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showManualForm(code) {
+  document.getElementById('edit-ai-form').style.display = 'block';
+  document.getElementById('e-orden').value = '';
+  document.getElementById('e-lab').value = '';
+  document.getElementById('e-nombre').value = '';
+  document.getElementById('e-comp').value = code;
+  aiData = { barcode: code };
+}
+
+function saveAIResult() {
+  if(!aiData) return;
+  const pu = parseFloat(document.getElementById('air-punit').value);
+  const pc = parseFloat(document.getElementById('air-pcaja').value);
+  const stk = parseInt(document.getElementById('air-stock').value) || 0;
+  if(isNaN(pu) || pu <= 0) {
+    notif('Ingresa el precio por unidad antes de guardar', 'error');
+    document.getElementById('air-punit').focus(); return;
+  }
+  if(isNaN(pc) || pc <= 0) {
+    notif('Ingresa el precio por caja antes de guardar', 'error');
+    document.getElementById('air-pcaja').focus(); return;
+  }
+  const newId = Math.max(0, ...meds.map(m=>m.id)) + 1;
+  meds.push({
+    id: newId,
+    orden: `MED-${String(newId).padStart(3,'0')}`,
+    barcode: aiData.barcode || '',
+    lab: aiData.laboratorio || 'Sin datos',
+    tipo: aiData.tipo || 'generico',
+    nombre: aiData.nombre || 'Sin nombre',
+    composicion: aiData.composicion || 'Sin datos',
+    seccion: aiData.seccion || 'Otros',
+    indicacion: aiData.indicacion || 'Sin datos',
+    dosis: aiData.dosis || 'Según prescripción',
+    punit: pu, pcaja: pc, stock: stk
+  });
+  SD();
+  notif(`✅ "${aiData.nombre}" guardado con stock: ${stk} unidades`);
+  document.getElementById('ai-result').classList.remove('show');
+  document.getElementById('air-stock').value = '';
+  aiData = null;
+}
+
+function editAIResult() {
+  if(!aiData) return;
+  document.getElementById('edit-ai-form').style.display = 'block';
+  document.getElementById('e-nombre').value = aiData.nombre || '';
+  document.getElementById('e-lab').value = aiData.laboratorio || '';
+  document.getElementById('e-comp').value = aiData.composicion || '';
+  document.getElementById('e-ind').value = aiData.indicacion || '';
+  document.getElementById('e-dos').value = aiData.dosis || '';
+  document.getElementById('e-punit').value = document.getElementById('air-punit').value || '';
+  document.getElementById('e-pcaja').value = document.getElementById('air-pcaja').value || '';
+  // Set tipo
+  const tipoSel = document.getElementById('e-tipo');
+  tipoSel.value = aiData.tipo || 'generico';
+  // Set seccion
+  const secSel = document.getElementById('e-sec');
+  [...secSel.options].forEach(o => { if(o.value === aiData.seccion) o.selected = true; });
+  document.getElementById('ai-result').classList.remove('show');
+  document.getElementById('edit-ai-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveEditedResult() {
+  const g = id => document.getElementById(id).value.trim();
+  const nb = g('e-nombre'), lb = g('e-lab'), cm = g('e-comp');
+  if(!nb||!lb||!cm) { notif('Nombre, laboratorio y composición son obligatorios', 'error'); return; }
+  const pu = parseFloat(g('e-punit')), pc = parseFloat(g('e-pcaja'));
+  if(isNaN(pu)||pu<=0) { notif('Ingresa el precio por unidad', 'error'); return; }
+  if(isNaN(pc)||pc<=0) { notif('Ingresa el precio por caja', 'error'); return; }
+  const newId = Math.max(0,...meds.map(m=>m.id))+1;
+  meds.push({
+    id: newId,
+    orden: g('e-orden')||`MED-${String(newId).padStart(3,'0')}`,
+    barcode: aiData?.barcode || '',
+    lab: lb, tipo: g('e-tipo'),
+    nombre: nb, composicion: cm,
+    seccion: g('e-sec'),
+    indicacion: g('e-ind')||'Sin datos',
+    dosis: g('e-dos')||'Según prescripción',
+    punit: pu, pcaja: pc
+  });
+  SD();
+  notif(`"${nb}" guardado correctamente`);
+  document.getElementById('edit-ai-form').style.display = 'none';
+  aiData = null;
+}
+
+function cancelEdit() { document.getElementById('edit-ai-form').style.display = 'none'; }
+function cancelAIResult() { document.getElementById('ai-result').classList.remove('show'); aiData = null; }
+
+// ===================== SCANNER - 4 OPCIONES =====================
+let celularPolling = null;
+let celularSessionId = null;
+let html5QrCode = null;
+
+// Opción 1: Cámara con html5-qrcode (funciona en Android, iPhone, PC)
+async function toggleCamera() {
+  const wrap = document.getElementById('camera-wrap');
+  const btn = document.getElementById('btn-cam');
+
+  if(html5QrCode) { stopCamera(); return; }
+
+  wrap.style.display = 'block';
+  btn.classList.add('active');
+  btn.innerHTML = '🛑 Detener Cámara';
+
+  try {
+    html5QrCode = new Html5Qrcode('qr-reader');
+
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 180 },
+      aspectRatio: 1.5,
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.QR_CODE,
+      ]
+    };
+
+    await html5QrCode.start(
+      { facingMode: 'environment' }, // cámara trasera del celular
+      config,
+      (decodedText) => {
+        if(decodedText && decodedText.length >= 6) {
+          stopCamera();
+          document.getElementById('barcode-input').value = decodedText;
+          notif('📦 Código detectado: ' + decodedText, 'info');
+          lookupBarcode(decodedText);
+        }
+      },
+      () => {} // errores silenciosos mientras escanea
+    );
+
+    notif('📸 Cámara activa — apunta al código de barras', 'info');
+  } catch(e) {
+    console.error('Error cámara:', e);
+    wrap.style.display = 'none';
+    btn.classList.remove('active');
+    btn.innerHTML = '📸 Cámara del dispositivo';
+    html5QrCode = null;
+    // Mensaje de error específico
+    if(e.toString().includes('Permission') || e.toString().includes('permission')) {
+      notif('⚠️ Permite el acceso a la cámara en tu navegador e intenta de nuevo.', 'error');
+    } else {
+      notif('No se pudo iniciar la cámara. Usa otra opción de escaneo.', 'error');
+    }
+  }
+}
+
+async function stopCamera() {
+  if(html5QrCode) {
+    try {
+      const state = html5QrCode.getState();
+      if(state === Html5QrcodeScannerState.SCANNING || state === Html5QrcodeScannerState.PAUSED) {
+        await html5QrCode.stop();
+      }
+      html5QrCode.clear();
+    } catch(e) { console.warn('Stop camera:', e); }
+    html5QrCode = null;
+  }
+  document.getElementById('camera-wrap').style.display = 'none';
+  document.getElementById('qr-reader').innerHTML = '';
+  const btn = document.getElementById('btn-cam');
+  if(btn) { btn.classList.remove('active'); btn.innerHTML = '📸 Cámara del dispositivo'; }
+}
+
+// Opción 2: Lector USB
+function focusBarcodeInput() {
+  document.getElementById('barcode-input').focus();
+  notif('🔫 Lector USB listo. Escanea el código en el campo de abajo.', 'info');
+  const btn = document.getElementById('btn-usb');
+  btn.classList.add('active');
+  setTimeout(() => btn.classList.remove('active'), 2000);
+}
+
+// Opción 3: Escanear con celular via QR
+function toggleCelularQR() {
+  const info = document.getElementById('celular-info');
+  const btn = document.getElementById('btn-cel');
+  if(info.style.display === 'block') {
+    info.style.display = 'none'; btn.classList.remove('active');
+    stopCelularPolling(); return;
+  }
+  info.style.display = 'block'; btn.classList.add('active');
+  generarQRCelular();
+}
+
+function generarQRCelular() {
+  celularSessionId = 'bs_scan_' + Date.now();
+  const scanURL = window.location.href.split('?')[0] + '?scan_session=' + celularSessionId + '&mode=scanner';
+  document.getElementById('celular-url-text').textContent = scanURL.slice(0,45)+'...';
+  document.getElementById('celular-url-link').textContent = scanURL.slice(0,50)+'...';
+  document.getElementById('celular-url-link').onclick = () => { navigator.clipboard?.writeText(scanURL).then(() => notif('URL copiada', 'info')); };
+  const canvas = document.getElementById('qr-canvas');
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => ctx.drawImage(img, 0, 0, 150, 150);
+  img.onerror = () => { ctx.fillStyle='#eee';ctx.fillRect(0,0,150,150);ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('Copia el link abajo',75,80); };
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(scanURL)}`;
+  startCelularPolling();
+}
+
+function copiarURL() {
+  const url = window.location.href.split('?')[0] + '?scan_session=' + celularSessionId + '&mode=scanner';
+  navigator.clipboard?.writeText(url).then(() => notif('✅ URL copiada al portapapeles', 'info'));
+}
+
+function startCelularPolling() {
+  stopCelularPolling();
+  celularPolling = setInterval(() => {
+    const code = localStorage.getItem(celularSessionId);
+    if(code) {
+      localStorage.removeItem(celularSessionId);
+      stopCelularPolling();
+      document.getElementById('celular-info').style.display = 'none';
+      document.getElementById('btn-cel').classList.remove('active');
+      document.getElementById('barcode-input').value = code;
+      notif('📱 Código recibido del celular: ' + code, 'info');
+      lookupBarcode(code);
+    }
+  }, 1000);
+}
+
+function stopCelularPolling() {
+  if(celularPolling) { clearInterval(celularPolling); celularPolling = null; }
+}
+
+// Modo escáner móvil
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const session = params.get('scan_session');
+  const mode = params.get('mode');
+  if(mode === 'scanner' && session) {
+    document.body.innerHTML = `
+      <div style="font-family:sans-serif;padding:20px;max-width:400px;margin:0 auto;text-align:center;background:#f4f8f5;min-height:100vh">
+        <div style="background:linear-gradient(135deg,#0d5c35,#138a4f);color:#fff;padding:24px;border-radius:14px;margin-bottom:20px">
+          <div style="font-size:48px">💊</div>
+          <h2 style="margin:8px 0;font-size:20px">Botica Santillán</h2>
+          <p style="opacity:.85;font-size:13px">Escáner Remoto desde Celular</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.1)">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">Ingresa el código de barras del medicamento:</p>
+          <input id="m-barcode" type="text" inputmode="numeric" placeholder="Código de barras..."
+            style="width:100%;padding:14px;border:2px solid #d1e8da;border-radius:10px;font-size:20px;font-family:monospace;text-align:center;margin-bottom:14px;box-sizing:border-box;outline:none">
+          <button onclick="enviarCodigoCelular('${session}')"
+            style="width:100%;padding:14px;background:#0d5c35;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer">
+            📤 Enviar al Sistema de Botica
+          </button>
+        </div>
+        <div id="m-status" style="margin-top:16px;font-size:14px;color:#555"></div>
+        <p style="font-size:12px;color:#999;margin-top:24px">El código se enviará automáticamente al sistema en la PC</p>
+      </div>`;
+    const inp = document.getElementById('m-barcode');
+    inp.focus();
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter') enviarCodigoCelular(session); });
+  }
+})();
+
+function enviarCodigoCelular(sessionId) {
+  const code = document.getElementById('m-barcode')?.value.trim();
+  if(!code) { document.getElementById('m-status').innerHTML = '<span style="color:red">⚠️ Ingresa un código primero</span>'; return; }
+  localStorage.setItem(sessionId, code);
+  document.getElementById('m-status').innerHTML = `<div style="background:#d1fae5;border-radius:10px;padding:14px;color:#065f46;font-weight:700;border:1px solid #6ee7b7">✅ Código <b>${code}</b> enviado.<br><span style="font-size:12px;font-weight:400">Vuelve a la pantalla de la botica.</span></div>`;
+  document.getElementById('m-barcode').value = '';
+}
+
+// Opción 4: Código manual
+function toggleManualInput() {
+  const inp = document.getElementById('barcode-input');
+  inp.focus();
+  inp.placeholder = 'Escribe el código manualmente y presiona Enter...';
+  const btn = document.getElementById('btn-manual');
+  btn.classList.add('active');
+  setTimeout(() => btn.classList.remove('active'), 2000);
+  notif('⌨️ Escribe el código en el campo y presiona Enter', 'info');
+}
+
+// ===================== AGREGAR MANUAL =====================
+async function buscarConIA() {
+  const nombre = document.getElementById('ai-search-nombre').value.trim();
+  if(!nombre) { notif('Escribe el nombre del medicamento primero', 'error'); return; }
+
+  const btn = document.getElementById('btn-buscar-ia');
+  const status = document.getElementById('ia-search-status');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Buscando...';
+  status.innerHTML = '🤖 Groq IA está analizando el medicamento...';
+  status.style.color = 'rgba(255,255,255,.85)';
+
+  const prompt = `Eres un experto farmacéutico peruano. Dame información completa del medicamento: "${nombre}".
+Responde ÚNICAMENTE con este JSON (sin markdown, sin explicaciones):
+{"nombre":"Nombre comercial completo con concentración","composicion":"Principio activo y concentración exacta","laboratorio":"Laboratorio fabricante más común en Perú","tipo":"generico o comercial","seccion":"Analgésicos|Antibióticos|Vitaminas|Gastroenterología|Cardiovascular|Respiratorio|Dermatología|Diabetes|Otros","indicacion":"Para qué sirve, descripción completa en 2-3 oraciones","dosis":"Modo de uso y dosificación detallada para adultos y niños si aplica","confianza":"alta|media|baja"}`;
+
+  try {
+    const info = await askGroq(prompt);
+
+    // Rellenar el formulario automáticamente
+    const set = (id, val) => { const e = document.getElementById(id); if(e && val) e.value = val; };
+    set('nn', info.nombre);
+    set('nc', info.composicion);
+    set('nl', info.laboratorio);
+    set('ni', info.indicacion);
+    set('nd', info.dosis);
+
+    // Tipo
+    const nt = document.getElementById('nt');
+    if(nt) nt.value = info.tipo === 'comercial' ? 'comercial' : 'generico';
+
+    // Sección
+    const ns = document.getElementById('ns');
+    if(ns && info.seccion) {
+      [...ns.options].forEach(o => { if(o.value === info.seccion) o.selected = true; });
+    }
+
+    const conf = info.confianza === 'alta' ? '✅ Alta confianza' : info.confianza === 'baja' ? '⚠️ Baja confianza — verifica los datos' : '🔶 Confianza media';
+    status.innerHTML = `${conf} — Datos completados por Groq IA. <b>Solo falta precio y stock.</b>`;
+    status.style.color = info.confianza === 'baja' ? '#fcd34d' : '#a7f3d0';
+
+    setTimeout(() => { document.getElementById('npu')?.focus(); }, 200);
+    notif(`✅ Datos de "${info.nombre}" completados por Groq IA`, 'info');
+    UP();
+  } catch(e) {
+    console.error(e);
+    status.innerHTML = '❌ No se pudo obtener info. Completa el formulario manualmente.';
+    status.style.color = '#fca5a5';
+    notif('Error al consultar la IA. Completa manualmente.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Buscar';
+  }
+}
+function AM() {
+  const g = id => document.getElementById(id).value.trim();
+  const nb=g('nn'), lb=g('nl'), cm=g('nc');
+  if(!nb||!lb||!cm) {
+    document.getElementById('ma').innerHTML='<div style="color:#c0392b;background:#fde8e8;padding:10px 14px;border-radius:9px;font-weight:600">⚠️ Nombre, laboratorio y composición son obligatorios.</div>';
+    return;
+  }
+  const newId = Math.max(0,...meds.map(m=>m.id))+1;
+  meds.push({
+    id:newId, orden:g('no')||`MED-${String(newId).padStart(3,'0')}`,
+    barcode:g('nbar')||'', lab:lb, tipo:g('nt'),
+    nombre:nb, composicion:cm, seccion:g('ns'),
+    indicacion:g('ni')||'Sin descripción',
+    dosis:g('nd')||'Según prescripción médica',
+    punit:parseFloat(g('npu'))||0, pcaja:parseFloat(g('npc'))||0,
+    stock:parseInt(g('nstk'))||0
+  });
+  SD();
+  document.getElementById('ma').innerHTML='<div style="color:#065f46;background:#d1fae5;padding:10px 14px;border-radius:9px;font-weight:600">✅ Medicamento guardado correctamente.</div>';
+  LA();
+  setTimeout(()=>document.getElementById('ma').innerHTML='',3000);
+  notif('Medicamento guardado');
+}
+
+function LA() {
+  ['no','nl','nn','nc','nbar','ni','nd','npu','npc','nstk'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('pa2').innerHTML='<span style="color:var(--mu);font-style:italic">Completa el formulario para ver la vista previa...</span>';
+}
+
+['nn','nl','nc','ni','nd','npu','npc'].forEach(id=>{
+  const e=document.getElementById(id); if(e) e.addEventListener('input',UP);
+});
+['nt','ns'].forEach(id=>{
+  const e=document.getElementById(id); if(e) e.addEventListener('change',UP);
+});
+function UP() {
+  const g=id=>document.getElementById(id)?.value||'';
+  const n=g('nn'); if(!n) return;
+  const t=g('nt'),s=g('ns'),l=g('nl'),c=g('nc'),i=g('ni'),d=g('nd'),pu=g('npu'),pc=g('npc');
+  document.getElementById('pa2').innerHTML=`
+    <div style="border:2px solid var(--pl);border-radius:12px;padding:18px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="${t==='comercial'?'bb2':'bg3'}">${t}</span>
+        <span class="bpurp">${s}</span>
+      </div>
+      <h3 style="color:var(--p);font-size:18px;margin-bottom:4px">${n}</h3>
+      ${c?`<p style="color:var(--mu);font-size:13px;margin-bottom:8px">${c}</p>`:''}
+      ${l?`<p style="font-size:13px;margin-bottom:6px"><b>Laboratorio:</b> ${l}</p>`:''}
+      ${i?`<div style="background:var(--ac);border-radius:8px;padding:10px;margin:8px 0;font-size:13px"><b>Indicación:</b><br>${i}</div>`:''}
+      ${d?`<div style="background:#fef3c7;border-radius:8px;padding:10px;margin:8px 0;font-size:13px"><b>Dosificación:</b><br>${d}</div>`:''}
+      <div style="display:flex;gap:12px;margin-top:10px">
+        ${pu?`<div style="background:#d1fae5;border-radius:9px;padding:10px 16px;text-align:center"><b style="color:#065f46;font-size:18px;font-family:'DM Mono',monospace">S/ ${parseFloat(pu).toFixed(2)}</b><br><span style="font-size:11px;color:var(--mu)">Unidad</span></div>`:''}
+        ${pc?`<div style="background:#dbeafe;border-radius:9px;padding:10px 16px;text-align:center"><b style="color:#1e40af;font-size:18px;font-family:'DM Mono',monospace">S/ ${parseFloat(pc).toFixed(2)}</b><br><span style="font-size:11px;color:var(--mu)">Caja</span></div>`:''}
+      </div>
+    </div>`;
+}
+
+// ===================== DNI / RUC LOOKUP =====================
+let dniTimer = null;
+let lastDNIResult = null;
+const APISPERU_TOKEN = 'apis-token-13668.tfKOzhnFREYvmNDG16dGAJBSY6MXNt7G';
+
+function onDNIInput() {
+  const val = document.getElementById('cr').value.replace(/\D/g,'');
+  document.getElementById('cr').value = val;
+  clearTimeout(dniTimer);
+  document.getElementById('dni-found').classList.remove('show');
+  document.getElementById('dni-error').classList.remove('show');
+  lastDNIResult = null;
+  if(val.length === 8 || val.length === 11) {
+    document.getElementById('dni-loader').classList.add('show');
+    dniTimer = setTimeout(() => lookupDNI(val, false), 600);
+  } else {
+    document.getElementById('dni-loader').classList.remove('show');
+  }
+}
+
+function onDNIInputEdit() {
+  const val = document.getElementById('ev-ruc').value.replace(/\D/g,'');
+  document.getElementById('ev-ruc').value = val;
+  clearTimeout(dniTimer);
+  document.getElementById('ev-dni-found').classList.remove('show');
+  document.getElementById('ev-dni-error').classList.remove('show');
+  if(val.length === 8 || val.length === 11) {
+    dniTimer = setTimeout(() => lookupDNI(val, true), 600);
+  }
+}
+
+async function lookupDNI(num, isEdit) {
+  const tipo = num.length === 8 ? 'dni' : 'ruc';
+  let nombre = null;
+
+  // Intento 1: apis.net.pe v2 con token Bearer
+  if(!nombre) {
+    try {
+      const r = await fetch(`https://api.apis.net.pe/v2/${tipo}?numero=${num}`, {
+        headers: { 'Authorization': `Bearer ${APISPERU_TOKEN}`, 'Accept': 'application/json' }
+      });
+      if(r.ok) {
+        const d = await r.json();
+        nombre = tipo==='dni' ? (d.nombre||d.apellidoPaterno ? `${d.apellidoPaterno||''} ${d.apellidoMaterno||''} ${d.nombres||''}`.trim() : null) : (d.razonSocial||null);
+      }
+    } catch(e) {}
+  }
+
+  // Intento 2: apis.net.pe v1
+  if(!nombre) {
+    try {
+      const r = await fetch(`https://api.apis.net.pe/v1/${tipo}?numero=${num}`, {
+        headers: { 'Authorization': `Bearer ${APISPERU_TOKEN}`, 'Accept': 'application/json' }
+      });
+      if(r.ok) {
+        const d = await r.json();
+        nombre = tipo==='dni' ? (d.nombre||null) : (d.razonSocial||null);
+      }
+    } catch(e) {}
+  }
+
+  // Intento 3: apiperu.dev (API alternativa peruana gratuita)
+  if(!nombre) {
+    try {
+      const endpoint = tipo==='dni'
+        ? `https://apiperu.dev/api/dni/${num}`
+        : `https://apiperu.dev/api/ruc/${num}`;
+      const r = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });
+      if(r.ok) {
+        const d = await r.json();
+        nombre = tipo==='dni' ? (d.data?.nombre_completo||d.data?.nombre||null) : (d.data?.nombre_o_razon_social||null);
+      }
+    } catch(e) {}
+  }
+
+  // Intento 4: Claude como último recurso para RUC de empresas conocidas
+  if(!nombre && tipo==='ruc') {
+    try {
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-haiku-4-5-20251001",
+          max_tokens:60,
+          messages:[{role:"user",content:`El RUC peruano ${num} ¿a qué empresa pertenece? Responde SOLO el nombre de la empresa o "NO_ENCONTRADO". Sin explicaciones.`}]
+        })
+      });
+      if(r.ok){
+        const d = await r.json();
+        const txt = (d.content||[]).map(i=>i.text||'').join('').trim();
+        if(txt && txt!=='NO_ENCONTRADO' && !txt.includes('NO_ENCONTRADO') && txt.length < 80) nombre = txt;
+      }
+    } catch(e) {}
+  }
+
+  // Mostrar resultado
+  if(isEdit) {
+    document.getElementById('ev-dni-found').classList.remove('show');
+    document.getElementById('ev-dni-error').classList.remove('show');
+    if(nombre) {
+      nombre = nombre.trim();
+      lastDNIResult = { nombre, num };
+      document.getElementById('ev-dni-name').textContent = nombre;
+      document.getElementById('ev-dni-found').classList.add('show');
+      document.getElementById('ev-cliente').value = nombre;
+    } else {
+      document.getElementById('ev-dni-error').textContent = `No se encontró el ${tipo.toUpperCase()} ${num}. Escribe el nombre manualmente.`;
+      document.getElementById('ev-dni-error').classList.add('show');
+    }
+  } else {
+    document.getElementById('dni-loader').classList.remove('show');
+    if(nombre) {
+      nombre = nombre.trim();
+      lastDNIResult = { nombre, num };
+      document.getElementById('dni-name-result').textContent = nombre;
+      document.getElementById('dni-found').classList.add('show');
+      document.getElementById('cn').value = nombre;
+      notif(`✅ ${tipo.toUpperCase()}: ${nombre}`, 'info');
+    } else {
+      document.getElementById('dni-error').textContent = `No se encontró el ${tipo.toUpperCase()} ${num}. Escribe el nombre manualmente.`;
+      document.getElementById('dni-error').classList.add('show');
+    }
+  }
+}
+
+function applyDNI() {
+  if(!lastDNIResult) return;
+  document.getElementById('cn').value = lastDNIResult.nombre;
+  document.getElementById('dni-found').classList.remove('show');
+  notif(`Cliente: ${lastDNIResult.nombre}`, 'info');
+}
+
+function applyDNIEdit() {
+  if(!lastDNIResult) return;
+  document.getElementById('ev-cliente').value = lastDNIResult.nombre;
+  document.getElementById('ev-dni-found').classList.remove('show');
+}
+
+// ===================== VENTAS =====================
+function BV() {
+  const q=document.getElementById('vs').value.toLowerCase(), su=document.getElementById('vsu');
+  if(!q){su.style.display='none';return;}
+  const r=meds.filter(m=>m.nombre.toLowerCase().includes(q)||m.composicion.toLowerCase().includes(q)).slice(0,8);
+  if(!r.length){su.style.display='none';return;}
+  su.style.display='block';
+  su.innerHTML=r.map(m=>`
+    <div onclick="AC(${m.id})" style="padding:11px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center"
+      onmouseover="this.style.background='#f7fdf9'" onmouseout="this.style.background='#fff'">
+      <div><b style="font-size:13px">${m.nombre}</b><div style="font-size:11px;color:var(--mu)">${m.composicion} · ${m.seccion}</div></div>
+      <span style="color:var(--p);font-weight:700;font-size:13px;white-space:nowrap;font-family:'DM Mono',monospace">S/ ${parseFloat(m.punit).toFixed(2)}</span>
+    </div>`).join('');
+}
+
+function AC(id) {
+  const m=meds.find(x=>x.id===id); if(!m) return;
+  const ex=cart.find(c=>c.id===id);
+  if(ex) ex.qty++; else cart.push({id:m.id,nombre:m.nombre,punit:m.punit,qty:1});
+  document.getElementById('vs').value='';
+  document.getElementById('vsu').style.display='none';
+  RC();
+}
+
+function RC() {
+  const co=document.getElementById('ci');
+  if(!cart.length){co.innerHTML='<p style="color:var(--mu);text-align:center;padding:16px">El carrito está vacío</p>';document.getElementById('tv').textContent='S/ 0.00';return;}
+  co.innerHTML=cart.map(c=>`
+    <div class="vi">
+      <div class="vn">${c.nombre}</div>
+      <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:6px 11px" onclick="CQ(${c.id},-1)">−</button>
+      <span style="font-weight:700;min-width:26px;text-align:center;font-family:'DM Mono',monospace">${c.qty}</span>
+      <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:6px 11px" onclick="CQ(${c.id},1)">+</button>
+      <span style="color:var(--p);font-weight:700;white-space:nowrap;font-family:'DM Mono',monospace">S/ ${(c.punit*c.qty).toFixed(2)}</span>
+      <button class="btn bd sm" onclick="QC(${c.id})">✕</button>
+    </div>`).join('');
+  document.getElementById('tv').textContent=`S/ ${cart.reduce((a,c)=>a+c.punit*c.qty,0).toFixed(2)}`;
+}
+
+function CQ(id,d){const it=cart.find(c=>c.id===id);if(!it)return;it.qty+=d;if(it.qty<=0)cart=cart.filter(c=>c.id!==id);RC();}
+function QC(id){cart=cart.filter(c=>c.id!==id);RC();}
+
+function TP(t){
+  ps=t;
+  document.getElementById('pyape').classList.toggle('sel',t==='yape');
+  document.getElementById('pefect').classList.toggle('sel',t==='efectivo');
+  document.getElementById('pmixto').classList.toggle('sel',t==='mixto');
+  document.getElementById('pmf').style.display=t==='mixto'?'block':'none';
+}
+
+function CM(){
+  const tot=cart.reduce((a,c)=>a+c.punit*c.qty,0),y=parseFloat(document.getElementById('my').value)||0,e=parseFloat(document.getElementById('me').value)||0,s=y+e,msg=document.getElementById('mm');
+  if(s<tot) msg.innerHTML=`<span style="color:var(--d)">⚠️ Faltan S/ ${(tot-s).toFixed(2)} para completar el pago</span>`;
+  else if(s>tot) msg.innerHTML=`<span style="color:#059669">✅ Vuelto: S/ ${(s-tot).toFixed(2)}</span>`;
+  else msg.innerHTML=`<span style="color:#059669">✅ Monto exacto</span>`;
+}
+
+function PV(){
+  if(!cart.length){notif('Agrega productos al carrito','error');return;}
+  if(!ps){notif('Selecciona un método de pago','error');return;}
+  const tot=cart.reduce((a,c)=>a+c.punit*c.qty,0),nm=document.getElementById('cn').value||'Sin nombre',rc=document.getElementById('cr').value||'-',cp=document.querySelector('input[name="comp"]:checked').value;
+  let pg=ps==='yape'?'📱 Yape':ps==='efectivo'?'💵 Efectivo':'🔀 Mixto';
+  if(ps==='mixto'){const y=parseFloat(document.getElementById('my').value)||0,e=parseFloat(document.getElementById('me').value)||0;pg=`Mixto (Yape S/${y.toFixed(2)} + Efect. S/${e.toFixed(2)})`;}
+  // Descontar stock
+  cart.forEach(c => {
+    const med = meds.find(m => m.id === c.id);
+    if(med) { med.stock = Math.max(0, (med.stock||0) - c.qty); }
+  });
+  const v={id:Date.now(),fecha:new Date().toISOString(),comprobante:cp,cliente:nm,ruc:rc,items:[...cart],pago:pg,total:tot,pt:ps,anulada:false};
+  vts.push(v); SD(); GB(v); RH();
+  notif(`Venta registrada — S/ ${tot.toFixed(2)}`);
+}
+
+function GB(v){
+  const d=new Date(v.fecha),f=d.toLocaleDateString('es-PE')+' '+d.toLocaleTimeString('es-PE'),c=v.comprobante==='factura'?'FACTURA ELECTRÓNICA':'BOLETA DE VENTA';
+  const items=v.items.map(i=>`<div class="r"><span>${i.nombre} x${i.qty}</span><span>S/ ${(i.punit*i.qty).toFixed(2)}</span></div>`).join('');
+  const html=`<div class="boleta" id="bc"><div class="c" style="font-weight:800;font-size:15px">⚕️ BOTICA SANTILLÁN</div><div class="c" style="font-size:11px">RUC: 10123456789</div><div class="c" style="font-size:11px">Chiclayo, Lambayeque - Perú</div><hr><div class="c" style="font-weight:700;font-size:13px;margin:4px 0">${c}</div><div class="r" style="margin-top:6px"><span>Fecha:</span><span>${f}</span></div><div class="r"><span>Cliente:</span><span>${v.cliente}</span></div>${v.ruc&&v.ruc!=='-'?`<div class="r"><span>${v.ruc.length===8?'DNI':'RUC'}:</span><span>${v.ruc}</span></div>`:''}<hr><div class="r" style="font-weight:700;font-size:11px"><span>PRODUCTO</span><span>SUBTOTAL</span></div><hr>${items}<hr><div class="r" style="font-weight:800;font-size:15px"><span>TOTAL:</span><span>S/ ${v.total.toFixed(2)}</span></div><div class="r" style="font-size:11px;margin-top:4px"><span>Pago:</span><span>${v.pago}</span></div><hr><div class="c" style="font-size:11px;color:#777">¡Gracias por su preferencia!</div></div>`;
+  document.getElementById('bprev').innerHTML=html;
+}
+
+function IB(){const b=document.getElementById('bc');if(!b){notif('Primero realiza una venta','error');return;}const p=document.getElementById('pa');p.innerHTML=b.outerHTML;p.style.display='block';window.print();p.style.display='none';}
+
+function LV(){
+  cart=[];ps='';RC();
+  ['pyape','pefect','pmixto'].forEach(id=>document.getElementById(id).classList.remove('sel'));
+  document.getElementById('pmf').style.display='none';
+  document.getElementById('cn').value='';
+  document.getElementById('cr').value='';
+  document.getElementById('dni-found').classList.remove('show');
+  document.getElementById('dni-error').classList.remove('show');
+  lastDNIResult=null;
+  document.getElementById('bprev').innerHTML='<div class="boleta"><div class="c" style="font-size:12px;color:#aaa;padding:12px 0">Procesa una venta para generar el comprobante</div></div>';
+}
+
+function ventaRowHTML(v, showActions=true) {
+  const d=new Date(v.fecha);
+  const estado = v.anulada
+    ? '<span class="badge-anulada">🚫 Anulada</span>'
+    : '<span class="bg3">✅ Válida</span>';
+  const acciones = showActions ? `
+    <button class="btn bi sm" title="Reimprimir" onclick="abrirReimp(${v.id})">🖨️</button>
+    ${!v.anulada ? `<button class="btn bw sm" title="Editar" onclick="abrirEditVenta(${v.id})">✏️</button>` : ''}
+    <button class="btn bd sm" title="Eliminar" onclick="eliminarVenta(${v.id})">🗑</button>
+  ` : '';
+  return `<tr class="${v.anulada?'venta-anulada':''}">
+    <td style="white-space:nowrap">${d.toLocaleDateString('es-PE')} ${d.toLocaleTimeString('es-PE')}</td>
+    <td><span class="bb2">${v.comprobante}</span></td>
+    <td>${v.cliente}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:12px">${v.ruc||'—'}</td>
+    <td style="font-size:11px;max-width:160px;white-space:normal">${v.items.map(i=>`${i.nombre} x${i.qty}`).join(', ')}</td>
+    <td style="font-size:12px">${v.pago}</td>
+    <td style="font-weight:700;color:var(--p);font-family:'DM Mono',monospace;white-space:nowrap">S/ ${v.total.toFixed(2)}</td>
+    <td>${estado}</td>
+    ${showActions?`<td style="white-space:nowrap">${acciones}</td>`:''}
+  </tr>`;
+}
+
+function RH(){
+  document.getElementById('htb').innerHTML=[...vts].reverse().slice(0,20).map(v=>ventaRowHTML(v)).join('')
+    ||'<tr><td colspan="9"><div class="empty-state"><div class="es-icon">📋</div><p>Sin ventas registradas</p></div></td></tr>';
+}
+
+// ===================== EDITAR VENTA =====================
+let editingVentaId = null;
+let editCartItems = [];
+
+function abrirEditVenta(id) {
+  const v = vts.find(x=>x.id===id); if(!v||v.anulada) return;
+  editingVentaId = id;
+  editCartItems = v.items.map(i=>({...i}));
+  lastDNIResult = null;
+  document.getElementById('ev-comp').value = v.comprobante;
+  document.getElementById('ev-ruc').value = v.ruc||'';
+  document.getElementById('ev-cliente').value = v.cliente||'';
+  document.getElementById('ev-dni-found').classList.remove('show');
+  document.getElementById('ev-dni-error').classList.remove('show');
+  // Set pago
+  const pgMap = {'📱 Yape':'yape','💵 Efectivo':'efectivo'};
+  const pt = v.pt || (v.pago.includes('Mixto')?'mixto': pgMap[v.pago]||'yape');
+  document.getElementById('ev-pago').value = pt;
+  renderEditItems();
+  document.getElementById('modal-edit-venta').classList.add('open');
+}
+
+function renderEditItems() {
+  const cont = document.getElementById('ev-items');
+  cont.innerHTML = editCartItems.map(c=>`
+    <div class="edit-venta-item">
+      <div class="evi-name">${c.nombre}</div>
+      <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:6px 10px" onclick="evCQ(${c.id},-1)">−</button>
+      <span style="font-weight:700;min-width:24px;text-align:center;font-family:'DM Mono',monospace">${c.qty}</span>
+      <button class="btn sm" style="background:#e5e7eb;color:#374151;padding:6px 10px" onclick="evCQ(${c.id},1)">+</button>
+      <span style="color:var(--p);font-weight:700;white-space:nowrap;font-family:'DM Mono',monospace">S/ ${(c.punit*c.qty).toFixed(2)}</span>
+      <button class="btn bd sm" onclick="evRemove(${c.id})">✕</button>
+    </div>`).join('');
+  const tot = editCartItems.reduce((a,c)=>a+c.punit*c.qty,0);
+  document.getElementById('ev-total').textContent = `S/ ${tot.toFixed(2)}`;
+}
+
+function evCQ(id,d){const it=editCartItems.find(c=>c.id===id);if(!it)return;it.qty+=d;if(it.qty<=0)editCartItems=editCartItems.filter(c=>c.id!==id);renderEditItems();}
+function evRemove(id){editCartItems=editCartItems.filter(c=>c.id!==id);renderEditItems();}
+
+function saveEditVenta() {
+  if(!editingVentaId) return;
+  if(!editCartItems.length){notif('La venta debe tener al menos un producto','error');return;}
+  const idx = vts.findIndex(v=>v.id===editingVentaId);
+  if(idx<0) return;
+  const pg = document.getElementById('ev-pago').value;
+  const pgLabel = pg==='yape'?'📱 Yape':pg==='efectivo'?'💵 Efectivo':'🔀 Mixto';
+  vts[idx] = {
+    ...vts[idx],
+    comprobante: document.getElementById('ev-comp').value,
+    ruc: document.getElementById('ev-ruc').value||'-',
+    cliente: document.getElementById('ev-cliente').value||'Sin nombre',
+    items: [...editCartItems],
+    total: editCartItems.reduce((a,c)=>a+c.punit*c.qty,0),
+    pago: pgLabel,
+    pt: pg
+  };
+  SD(); RH(); CM2('modal-edit-venta');
+  notif('Venta actualizada correctamente');
+}
+
+function anularVenta() {
+  if(!editingVentaId) return;
+  if(!confirm('¿Seguro que deseas anular esta venta? Esta acción no elimina el registro pero la marca como anulada.')) return;
+  const idx = vts.findIndex(v=>v.id===editingVentaId);
+  if(idx<0) return;
+  vts[idx].anulada = true;
+  SD(); RH(); CM2('modal-edit-venta');
+  notif('Venta anulada', 'info');
+}
+
+function eliminarVenta(id) {
+  if(!confirm('¿Eliminar esta venta del historial? Esta acción es permanente.')) return;
+  vts = vts.filter(v=>v.id!==id);
+  SD(); RH();
+  notif('Venta eliminada del historial');
+}
+
+// ===================== REIMPRIMIR =====================
+function abrirReimp(id) {
+  const v = vts.find(x=>x.id===id); if(!v) return;
+  const d=new Date(v.fecha),f=d.toLocaleDateString('es-PE')+' '+d.toLocaleTimeString('es-PE');
+  const c=v.comprobante==='factura'?'FACTURA ELECTRÓNICA':'BOLETA DE VENTA';
+  const items=v.items.map(i=>`<div class="r"><span>${i.nombre} x${i.qty}</span><span>S/ ${(i.punit*i.qty).toFixed(2)}</span></div>`).join('');
+  const anulNote = v.anulada ? `<div class="r" style="color:red;font-weight:700;text-align:center;justify-content:center;margin:4px 0">*** ANULADA ***</div>` : '';
+  document.getElementById('reimp-content').innerHTML=`<div class="boleta" id="reimp-bc"><div class="c" style="font-weight:800;font-size:15px">⚕️ BOTICA SANTILLÁN</div><div class="c" style="font-size:11px">RUC: 10123456789</div><div class="c" style="font-size:11px">Chiclayo, Lambayeque - Perú</div>${anulNote}<hr><div class="c" style="font-weight:700;font-size:13px;margin:4px 0">${c}</div><div class="r" style="margin-top:6px"><span>Fecha:</span><span>${f}</span></div><div class="r"><span>Cliente:</span><span>${v.cliente}</span></div>${v.ruc&&v.ruc!=='-'?`<div class="r"><span>${(v.ruc||'').length===8?'DNI':'RUC'}:</span><span>${v.ruc}</span></div>`:''}<hr><div class="r" style="font-weight:700;font-size:11px"><span>PRODUCTO</span><span>SUBTOTAL</span></div><hr>${items}<hr><div class="r" style="font-weight:800;font-size:15px"><span>TOTAL:</span><span>S/ ${v.total.toFixed(2)}</span></div><div class="r" style="font-size:11px;margin-top:4px"><span>Pago:</span><span>${v.pago}</span></div><hr><div class="c" style="font-size:11px;color:#777">¡Gracias por su preferencia!</div></div>`;
+  document.getElementById('modal-reimp').classList.add('open');
+}
+
+function reimprimirBoleta() {
+  const b = document.getElementById('reimp-bc'); if(!b) return;
+  const p = document.getElementById('pa');
+  p.innerHTML = b.outerHTML; p.style.display='block';
+  window.print(); p.style.display='none';
+}
+
+// ===================== REPORTES =====================
+function RR(){
+  const n=new Date(),h=n.toDateString(),si=new Date(n);si.setDate(n.getDate()-n.getDay());
+  const ma=n.getMonth(),aa=n.getFullYear();
+  let td=0,ts=0,tm=0,ta=0,ty=0,te=0,tmx=0;
+  vts.forEach(v=>{const d=new Date(v.fecha);if(d.toDateString()===h)td+=v.total;if(d>=si)ts+=v.total;if(d.getMonth()===ma&&d.getFullYear()===aa)tm+=v.total;if(d.getFullYear()===aa)ta+=v.total;if(v.pt==='yape')ty+=v.total;else if(v.pt==='efectivo')te+=v.total;else if(v.pt==='mixto')tmx+=v.total;});
+  document.getElementById('sd').textContent=`S/ ${td.toFixed(2)}`;
+  document.getElementById('ss').textContent=`S/ ${ts.toFixed(2)}`;
+  document.getElementById('sm2').textContent=`S/ ${tm.toFixed(2)}`;
+  document.getElementById('sa').textContent=`S/ ${ta.toFixed(2)}`;
+  document.getElementById('syt').textContent=`S/ ${ty.toFixed(2)}`;
+  document.getElementById('set2').textContent=`S/ ${te.toFixed(2)}`;
+  document.getElementById('smt').textContent=`S/ ${tmx.toFixed(2)}`;
+  const dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],dd=[];
+  for(let i=6;i>=0;i--){const d=new Date(n);d.setDate(n.getDate()-i);dd.push({l:dn[d.getDay()],v:vts.filter(v=>new Date(v.fecha).toDateString()===d.toDateString()).reduce((a,v)=>a+v.total,0)});}
+  RB('cd',dd);
+  const ms=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  RB('cm3',ms.map((m,i)=>({l:m,v:vts.filter(v=>{const d=new Date(v.fecha);return d.getFullYear()===aa&&d.getMonth()===i;}).reduce((a,v)=>a+v.total,0)})));
+  document.getElementById('atb').innerHTML=[...vts].reverse().map(v=>ventaRowHTML(v)).join('')
+    ||'<tr><td colspan="9"><div class="empty-state"><p>Sin ventas aún</p></div></td></tr>';
+}
+function RB(id,data){const mx=Math.max(...data.map(d=>d.v),1);document.getElementById(id).innerHTML=data.map(d=>`<div class="cbr"><div class="cbl">${d.l}</div><div class="cbt"><div class="cbf" style="width:${(d.v/mx*100).toFixed(1)}%">${d.v>0?`S/${d.v.toFixed(0)}`:''}</div></div><div class="cbv">S/${d.v.toFixed(2)}</div></div>`).join('');}
+
+// ===================== INIT =====================
+RI(); RH();
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+</script>
+
+</div> <!-- /app-content -->
+
+<script>
+// ===== LOGIN =====
+const PASS = 'bsanti2026';
+
+function doLogin() {
+  const val = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if(val === PASS) {
+    sessionStorage.setItem('bs_auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-content').style.display = 'block';
+    err.style.display = 'none';
+    document.getElementById('login-pass').value = '';
+  } else {
+    err.style.display = 'block';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+    document.getElementById('login-pass').style.borderColor = '#fca5a5';
+    setTimeout(() => document.getElementById('login-pass').style.borderColor = '#d1e8da', 2000);
+  }
+}
+
+function doLogout() {
+  if(confirm('¿Cerrar sesión?')) {
+    sessionStorage.removeItem('bs_auth');
+    document.getElementById('app-content').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    setTimeout(() => document.getElementById('login-pass').focus(), 100);
+  }
+}
+
+function togglePass() {
+  const inp = document.getElementById('login-pass');
+  const eye = document.getElementById('eye-icon');
+  if(inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; }
+  else { inp.type = 'password'; eye.textContent = '👁'; }
+}
+
+// Verificar si ya está autenticado en esta sesión
+if(sessionStorage.getItem('bs_auth') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-content').style.display = 'block';
+} else {
+  setTimeout(() => document.getElementById('login-pass').focus(), 300);
+}
+</script>
+</body>
+</html>
