@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda en Línea — Botica Santillán</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:       #1a3a8f;
+      --blue-dark:  #0e2460;
+      --blue-light: #2451b3;
+      --teal:       #2bbfaa;
+      --teal-light: #3dd6c0;
+      --teal-dark:  #1a9983;
+      --white:      #ffffff;
+      --gray-light: #f4f7fc;
+      --gray:       #8a99b3;
+      --text:       #1c2740;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
+    body{ font-family:'Lato',sans-serif; color:var(--text); background:var(--gray-light); }
+
+    /* ─── NAVBAR ─── */
+    nav{
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:var(--blue-dark);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 2rem; height:70px;
+      box-shadow:0 2px 20px rgba(0,0,0,.3);
+    }
+    .nav-brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .nav-logo{ width:42px; height:42px; }
+    .nav-title{ font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.2rem; color:#fff; line-height:1.1; }
+    .nav-title span{ display:block; font-size:.6rem; font-weight:400; color:var(--teal-light); letter-spacing:2px; text-transform:uppercase; }
+    .nav-right{ display:flex; align-items:center; gap:1rem; }
+    .btn-back{
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(255,255,255,.12); color:#fff;
+      border:1.5px solid rgba(255,255,255,.25);
+      padding:8px 18px; border-radius:30px;
+      font-family:'Montserrat',sans-serif; font-weight:600; font-size:.85rem;
+      text-decoration:none; transition:all .2s;
+    }
+    .btn-back:hover{ background:rgba(255,255,255,.22); }
+    .btn-carrito-nav{
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--teal); color:#fff;
+      border:none; padding:10px 20px; border-radius:30px;
+      font-family:'Montserrat',sans-serif; font-weight:700; font-size:.9rem;
+      cursor:pointer; transition:all .2s; position:relative;
+    }
+    .btn-carrito-nav:hover{ background:var(--teal-dark); transform:translateY(-1px); }
+    .carrito-badge{
+      background:#e53e3e; color:#fff; font-size:.7rem; font-weight:800;
+      width:20px; height:20px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:20px;
+    }
+    .carrito-badge.bump{ animation:bump .3s ease; }
+    @keyframes bump{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+    /* ─── HERO TIENDA ─── */
+    .tienda-hero{
+      margin-top:70px;
+      background:linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, var(--teal-dark) 100%);
+      padding:3rem 2rem 2.5rem;
+      text-align:center; color:#fff;
+    }
+    .tienda-hero .tag{ background:rgba(255,255,255,.15); color:var(--teal-light); font-size:.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; display:inline-block; margin-bottom:1rem; }
+    .tienda-hero h1{ font-family:'Montserrat',sans-serif; font-weight:800; font-size:2rem; margin-bottom:.5rem; }
+    .tienda-hero p{ color:rgba(255,255,255,.8); font-size:1rem; max-width:560px; margin:0 auto; }
+
+    /* ─── FILTROS ─── */
+    .filtros-wrap{
+      background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.08);
+      padding:1.2rem 2rem; position:sticky; top:70px; z-index:900;
+    }
+    .filtros-inner{ max-width:1200px; margin:0 auto; display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
+    .search-wrap{ display:flex; align-items:center; gap:8px; flex:1; min-width:200px; background:var(--gray-light); border:1.5px solid #dde3f0; border-radius:30px; padding:0 1rem; }
+    .search-wrap input{ flex:1; border:none; background:transparent; padding:.65rem 0; font-size:.9rem; font-family:'Lato',sans-serif; color:var(--text); outline:none; }
+    .filtros-inner select{ padding:.65rem 1rem; border:1.5px solid #dde3f0; border-radius:30px; font-size:.88rem; font-family:'Lato',sans-serif; background:#fff; color:var(--text); cursor:pointer; }
+    .filtros-inner select:focus{ border-color:var(--teal); outline:none; }
+
+    /* ─── MAIN CONTENT ─── */
+    .tienda-main{ max-width:1200px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .resultados-info{ font-size:.88rem; color:var(--gray); margin-bottom:1.2rem; }
+
+    /* ─── GRID PRODUCTOS ─── */
+    .tienda-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      gap:1.4rem;
+    }
+
+    /* ─── TARJETA PRODUCTO ─── */
+    .tprod-card{
+      background:#fff; border-radius:16px;
+      box-shadow:0 2px 10px rgba(0,0,0,.07);
+      border:1.5px solid #e8edf8;
+      display:flex; flex-direction:column;
+      transition:transform .2s, box-shadow .2s;
+      overflow:hidden;
+    }
+    .tprod-card:hover{ transform:translateY(-4px); box-shadow:0 8px 28px rgba(26,58,143,.14); }
+    .tprod-card.agotado{ opacity:.65; }
+
+    .tprod-header{
+      background:linear-gradient(135deg, #f0f4ff 0%, #e8f8f5 100%);
+      padding:1.2rem 1.2rem .9rem;
+      border-bottom:1.5px solid #e8edf8;
+    }
+    .tprod-badges{ display:flex; gap:.4rem; margin-bottom:.7rem; flex-wrap:wrap; }
+    .tprod-tipo-badge{
+      font-size:.65rem; font-weight:800; padding:3px 10px; border-radius:20px;
+      letter-spacing:.5px; text-transform:uppercase;
+    }
+    .tprod-tipo-badge.generico{ background:#d1fae5; color:#065f46; }
+    .tprod-tipo-badge.comercial{ background:#dbeafe; color:#1e40af; }
+    .tprod-seccion-badge{ font-size:.65rem; font-weight:700; padding:3px 10px; border-radius:20px; background:#f0f4ff; color:var(--blue); }
+
+    .tprod-icon{ font-size:2.2rem; margin:.3rem 0 .5rem; }
+    .tprod-nombre{ font-family:'Montserrat',sans-serif; font-weight:700; font-size:1rem; color:var(--blue-dark); line-height:1.3; margin-bottom:.25rem; }
+    .tprod-composicion{ font-size:.78rem; color:var(--gray); line-height:1.4; }
+
+    .tprod-body{ padding:1rem 1.2rem; flex:1; display:flex; flex-direction:column; gap:.5rem; }
+    .tprod-lab{ font-size:.78rem; color:var(--gray); display:flex; align-items:center; gap:5px; }
+    .tprod-indicacion{ font-size:.8rem; color:#4a5568; line-height:1.5; flex:1; }
+
+    .tprod-precios{ display:flex; gap:.8rem; align-items:flex-end; margin-top:.3rem; }
+    .tprod-precio-item{ display:flex; flex-direction:column; }
+    .tprod-precio-item strong{ font-family:'Montserrat',sans-serif; font-size:1.25rem; font-weight:800; color:var(--teal-dark); }
+    .tprod-precio-item span{ font-size:.7rem; color:var(--gray); text-transform:uppercase; letter-spacing:.5px; }
+    .tprod-precio-item.caja strong{ font-size:1rem; color:var(--blue); }
+
+    .tprod-stock{ display:inline-block; font-size:.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+    .tprod-stock.disponible{ background:#d1fae5; color:#065f46; }
+    .tprod-stock.bajo{ background:#fef3c7; color:#92400e; }
+    .tprod-stock.agotado-badge{ background:#fee2e2; color:#991b1b; }
+
+    .tprod-footer{ padding:.9rem 1.2rem; border-top:1.5px solid #f0f4f8; display:flex; gap:.7rem; align-items:center; }
+    .tprod-btn-cantidad{ display:flex; align-items:center; gap:.5rem; background:var(--gray-light); border-radius:30px; padding:4px 10px; }
+    .tprod-btn-cantidad button{ background:none; border:none; width:24px; height:24px; cursor:pointer; font-size:1.1rem; font-weight:700; color:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+    .tprod-btn-cantidad button:hover{ background:var(--teal-light); color:#fff; }
+    .tprod-qty-display{ font-family:'Montserrat',sans-serif; font-weight:700; min-width:22px; text-align:center; font-size:.9rem; }
+
+    .tprod-btn-agregar{
+      flex:1; padding:.6rem .5rem; border:none; border-radius:30px;
+      background:var(--teal); color:#fff;
+      font-family:'Montserrat',sans-serif; font-weight:700; font-size:.82rem;
+      cursor:pointer; transition:all .18s;
+    }
+    .tprod-btn-agregar:hover{ background:var(--teal-dark); }
+    .tprod-btn-agregar.en-carrito{ background:var(--blue); }
+
+    /* ─── EMPTY STATE ─── */
+    .tienda-empty-state{ text-align:center; padding:3rem 1rem; grid-column:1/-1; }
+    .tienda-empty-state .icon{ font-size:3rem; margin-bottom:1rem; }
+    .tienda-empty-state h3{ font-family:'Montserrat',sans-serif; font-size:1.3rem; color:var(--blue-dark); margin-bottom:.5rem; }
+    .tienda-empty-state p{ color:var(--gray); }
+
+    /* ─── VER MÁS ─── */
+    .ver-mas-wrap{ text-align:center; margin-top:2rem; }
+    .btn-ver-mas{ background:var(--blue-dark); color:#fff; border:none; padding:.9rem 2.5rem; border-radius:30px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:.9rem; cursor:pointer; transition:all .2s; }
+    .btn-ver-mas:hover{ background:var(--blue); transform:translateY(-2px); }
+
+    /* ─── MODAL CARRITO ─── */
+    .carrito-overlay{
+      position:fixed; inset:0; background:rgba(14,36,96,.5); z-index:2000;
+      display:flex; justify-content:flex-end;
+      opacity:0; visibility:hidden; transition:all .3s;
+    }
+    .carrito-overlay.abierto{ opacity:1; visibility:visible; }
+    .carrito-panel{
+      background:#fff; width:min(460px,100vw); height:100%;
+      display:flex; flex-direction:column;
+      transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1);
+      overflow:hidden;
+    }
+    .carrito-overlay.abierto .carrito-panel{ transform:translateX(0); }
+
+    .carrito-header{ background:var(--blue-dark); color:#fff; padding:1.2rem 1.5rem; display:flex; justify-content:space-between; align-items:flex-start; }
+    .carrito-header h2{ font-family:'Montserrat',sans-serif; font-size:1.2rem; }
+    .carrito-header p{ font-size:.82rem; opacity:.75; margin-top:3px; }
+    .carrito-close{ background:rgba(255,255,255,.15); border:none; color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:1.1rem; }
+
+    .carrito-items{ flex:1; overflow-y:auto; padding:1rem 1.5rem; }
+    .carrito-vacio{ text-align:center; padding:2.5rem 1rem; color:var(--gray); }
+    .carrito-vacio p{ font-weight:700; margin:.5rem 0 .3rem; }
+    .carrito-vacio span{ font-size:.83rem; }
+
+    .carrito-item{ display:flex; align-items:center; gap:.8rem; padding:.9rem 0; border-bottom:1px solid #f0f4f8; }
+    .carrito-item-info{ flex:1; }
+    .carrito-item-nombre{ font-weight:700; font-size:.88rem; color:var(--blue-dark); }
+    .carrito-item-comp{ font-size:.75rem; color:var(--gray); margin-top:2px; }
+    .carrito-item-controls{ display:flex; align-items:center; gap:.4rem; background:var(--gray-light); border-radius:20px; padding:3px 8px; }
+    .carrito-item-controls button{ background:none; border:none; cursor:pointer; font-size:1rem; font-weight:700; color:var(--blue); width:22px; height:22px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+    .carrito-item-controls button:hover{ background:var(--teal); color:#fff; }
+    .carrito-item-qty{ font-family:'Montserrat',sans-serif; font-weight:700; min-width:18px; text-align:center; font-size:.88rem; }
+    .carrito-item-precio{ font-family:'Montserrat',sans-serif; font-weight:800; font-size:.92rem; color:var(--teal-dark); min-width:60px; text-align:right; }
+    .carrito-item-quitar{ background:none; border:none; cursor:pointer; color:#ccc; font-size:.9rem; padding:3px; border-radius:50%; transition:color .15s; }
+    .carrito-item-quitar:hover{ color:#e53e3e; }
+
+    .carrito-total-wrap{ padding:1rem 1.5rem; border-top:2px solid var(--gray-light); }
+    .carrito-subtotal{ display:flex; justify-content:space-between; align-items:center; }
+    .carrito-subtotal span{ font-size:.88rem; color:var(--gray); }
+    .carrito-subtotal strong{ font-family:'Montserrat',sans-serif; font-size:1.3rem; color:var(--blue-dark); }
+    .carrito-aviso{ font-size:.75rem; color:var(--gray); margin-top:.5rem; line-height:1.4; }
+
+    .carrito-footer-btns{ display:flex; gap:.8rem; padding:1rem 1.5rem; border-top:1px solid #f0f4f8; }
+    .carrito-btn-limpiar{ flex:1; padding:.75rem; border:1.5px solid #e0e0e0; border-radius:10px; background:#fff; color:#999; font-family:'Montserrat',sans-serif; font-weight:700; font-size:.82rem; cursor:pointer; }
+    .carrito-btn-limpiar:hover{ border-color:#e53e3e; color:#e53e3e; }
+    .carrito-btn-proceder{ flex:2; padding:.75rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-family:'Montserrat',sans-serif; font-weight:700; font-size:.88rem; cursor:pointer; transition:background .2s; }
+    .carrito-btn-proceder:hover{ background:var(--teal-dark); }
+
+    /* ─── FORMULARIO PEDIDO ─── */
+    .carrito-form{ padding:1rem 1.5rem; border-top:1px solid #f0f4f8; overflow-y:auto; }
+    .carrito-form h3{ font-family:'Montserrat',sans-serif; font-size:1rem; color:var(--blue-dark); margin-bottom:1rem; }
+    .carrito-form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+    .carrito-fg{ margin-bottom:.9rem; }
+    .carrito-fg label{ display:block; font-size:.75rem; font-weight:700; color:var(--gray); margin-bottom:.35rem; text-transform:uppercase; letter-spacing:.4px; }
+    .carrito-fg input, .carrito-fg select, .carrito-fg textarea{ width:100%; padding:.65rem .9rem; border:1.5px solid #dde3f0; border-radius:10px; font-size:.88rem; font-family:'Lato',sans-serif; color:var(--text); background:#fafcff; }
+    .carrito-fg input:focus, .carrito-fg select:focus, .carrito-fg textarea:focus{ border-color:var(--teal); outline:none; }
+    .carrito-fg textarea{ resize:vertical; min-height:60px; }
+
+    .carrito-btn-enviar{ width:100%; padding:1rem; border:none; border-radius:12px; background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.6rem; transition:all .2s; margin-top:.5rem; }
+    .carrito-btn-enviar:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,211,102,.4); }
+    .carrito-wsp-aviso{ font-size:.73rem; color:var(--gray); text-align:center; margin-top:.5rem; }
+
+    /* ─── TOAST ─── */
+    .tienda-toast{ position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(120%); background:var(--blue-dark); color:#fff; padding:.8rem 1.8rem; border-radius:30px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:.88rem; z-index:3000; transition:transform .35s cubic-bezier(.4,0,.2,1); box-shadow:0 6px 20px rgba(0,0,0,.25); white-space:nowrap; }
+    .tienda-toast.show{ transform:translateX(-50%) translateY(0); }
+
+    /* ─── FOOTER ─── */
+    .tienda-footer{ background:var(--blue-dark); color:rgba(255,255,255,.7); text-align:center; padding:1.5rem; font-size:.82rem; margin-top:2rem; }
+    .tienda-footer a{ color:var(--teal-light); text-decoration:none; font-weight:700; }
+    .tienda-footer a:hover{ text-decoration:underline; }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:768px){
+      .filtros-inner{ gap:.6rem; }
+      .tienda-grid{ grid-template-columns:1fr 1fr; gap:1rem; }
+      .carrito-form-grid{ grid-template-columns:1fr; }
+      nav{ padding:0 1rem; }
+      .tienda-hero h1{ font-size:1.5rem; }
+    }
+    @media(max-width:480px){
+      .tienda-grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="10" width="30" height="80" rx="8" fill="#2bbfaa" opacity="0.85"/>
+      <rect x="10" y="35" width="80" height="30" rx="8" fill="#2bbfaa" opacity="0.85"/>
+      <rect x="38" y="13" width="24" height="74" rx="6" fill="#1a9983" opacity="0.5"/>
+      <rect x="13" y="38" width="74" height="24" rx="6" fill="#1a9983" opacity="0.5"/>
+    </svg>
+    <div class="nav-title">Botica Santillán <span>Salud y Bienestar</span></div>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="btn-back">← Página principal</a>
+    <button class="btn-carrito-nav" onclick="abrirCarrito()">
+      🛒 Carrito <span class="carrito-badge" id="carrito-badge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="tienda-hero">
+  <div class="tag">Compra en línea</div>
+  <h1>🏥 Tienda de Medicamentos</h1>
+  <p>Encuentra tus medicamentos, agrégalos al carrito y envía tu pedido directo por WhatsApp. ¡Fácil y rápido!</p>
+</div>
+
+<!-- ══ FILTROS ══ -->
+<div class="filtros-wrap">
+  <div class="filtros-inner">
+    <div class="search-wrap">
+      <span>🔍</span>
+      <input type="text" id="buscador" placeholder="Buscar medicamento..." oninput="filtrar()" autocomplete="off">
+    </div>
+    <select id="filtro-seccion" onchange="filtrar()">
+      <option value="">Todas las categorías</option>
+      <option>Analgésicos</option>
+      <option>Antibióticos</option>
+      <option>Antiinflamatorios</option>
+      <option>Antihistamínicos</option>
+      <option>Antigripales</option>
+      <option>Gastroenterología</option>
+      <option>Cardiovascular</option>
+      <option>Respiratorio</option>
+      <option>Dermatología</option>
+      <option>Diabetes</option>
+      <option>Antimicóticos</option>
+      <option>Antiparasitarios</option>
+      <option>Neurología</option>
+      <option>Ginecología</option>
+      <option>Urología</option>
+      <option>Pediátricos</option>
+      <option>Suplementos</option>
+      <option>Otros</option>
+    </select>
+    <select id="filtro-tipo" onchange="filtrar()">
+      <option value="">Todos los tipos</option>
+      <option value="generico">Genérico</option>
+      <option value="comercial">Comercial</option>
+    </select>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="tienda-main">
+  <p class="resultados-info" id="info-resultados"></p>
+  <div class="tienda-grid" id="tienda-grid"></div>
+  <div class="ver-mas-wrap" id="ver-mas-wrap" style="display:none">
+    <button class="btn-ver-mas" onclick="mostrarMas()">Ver más productos ↓</button>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="tienda-footer">
+  <p>© 2025 Botica Santillán · Urb. Los Sauces, Pimentel - Chiclayo · <a href="index.html">← Volver a la página principal</a></p>
+</div>
+
+<!-- ══ MODAL CARRITO ══ -->
+<div id="modal-carrito" class="carrito-overlay" onclick="if(event.target===this)cerrarCarrito()">
+  <div class="carrito-panel">
+    <div class="carrito-header">
+      <div>
+        <h2>🛒 Tu Carrito</h2>
+        <p id="carrito-count-label">0 productos</p>
+      </div>
+      <button class="carrito-close" onclick="cerrarCarrito()">✕</button>
+    </div>
+
+    <div class="carrito-items" id="carrito-items">
+      <div class="carrito-vacio" id="carrito-vacio">
+        <div style="font-size:3rem">🛒</div>
+        <p>Tu carrito está vacío</p>
+        <span>Agrega productos desde el catálogo</span>
+      </div>
+    </div>
+
+    <div id="carrito-total-wrap" style="display:none" class="carrito-total-wrap">
+      <div class="carrito-subtotal">
+        <span>Subtotal estimado:</span>
+        <strong id="carrito-total-monto">S/ 0.00</strong>
+      </div>
+      <p class="carrito-aviso">⚠️ Precios referenciales. El monto final será confirmado por nuestro equipo.</p>
+    </div>
+
+    <div id="carrito-form" class="carrito-form" style="display:none">
+      <h3>📋 Tus datos para el pedido</h3>
+      <div class="carrito-form-grid">
+        <div class="carrito-fg">
+          <label>Nombre completo *</label>
+          <input type="text" id="ped-nombre" placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="carrito-fg">
+          <label>Celular / WhatsApp *</label>
+          <input type="tel" id="ped-celular" placeholder="Ej: 999 888 777">
+        </div>
+      </div>
+      <div class="carrito-fg">
+        <label>Dirección <span style="opacity:.6;text-transform:none">(opcional si recoge en tienda)</span></label>
+        <input type="text" id="ped-direccion" placeholder="Ej: Av. Los Laureles 123, Pimentel">
+      </div>
+      <div class="carrito-form-grid">
+        <div class="carrito-fg">
+          <label>Tipo de entrega</label>
+          <select id="ped-entrega">
+            <option value="delivery">🚚 Delivery a domicilio</option>
+            <option value="recojo">🏪 Recojo en tienda</option>
+          </select>
+        </div>
+        <div class="carrito-fg">
+          <label>Método de pago</label>
+          <select id="ped-pago">
+            <option value="efectivo">💵 Efectivo</option>
+            <option value="yape">📱 Yape</option>
+            <option value="mixto">🔀 Yape + Efectivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="carrito-fg">
+        <label>Observaciones <span style="opacity:.6;text-transform:none">(alergias, receta, etc.)</span></label>
+        <textarea id="ped-obs" placeholder="Ej: Tengo receta médica, soy alérgico a..."></textarea>
+      </div>
+      <button class="carrito-btn-enviar" onclick="enviarPedido()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Enviar pedido por WhatsApp
+      </button>
+      <p class="carrito-wsp-aviso">Serás redirigido a WhatsApp con tu pedido completo listo para enviar.</p>
+    </div>
+
+    <div id="carrito-footer-btns" class="carrito-footer-btns" style="display:none">
+      <button class="carrito-btn-limpiar" onclick="vaciarCarrito()">🗑 Vaciar</button>
+      <button class="carrito-btn-proceder" onclick="mostrarFormulario()">Completar pedido →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="tienda-toast"></div>
+
+<script>
+(function(){
+  const WA = '51922370933';
+  const POR_PAGINA = 12;
+
+  /* ════════════════════════════════
+     CATÁLOGO DE PRODUCTOS
+  ════════════════════════════════ */
+  const PRODUCTOS = [
+    // ── ANALGÉSICOS ──
+    { id:1,  nombre:'Ketorolaco 10 mg', composicion:'Ketorolaco Trometamina 10 mg · 100 tab', lab:'IQFARMA', seccion:'Analgésicos', tipo:'generico', indicacion:'Analgésico potente para dolor moderado a intenso.', punit:0.80, stock:100 },
+    { id:2,  nombre:'Panadol Antigripal NF', composicion:'Paracetamol 500 mg + Clorfenamina + Fenilefrina · 104 tab', lab:'Haleon', seccion:'Antigripales', tipo:'comercial', indicacion:'Alivia dolores, fiebre y congestión nasal.', punit:3.00, stock:50 },
+    { id:3,  nombre:'Panadol Forte', composicion:'Paracetamol 500 mg + Cafeína · 56 tab', lab:'Haleon', seccion:'Analgésicos', tipo:'comercial', indicacion:'Alivia dolores fuertes como la migraña.', punit:2.80, stock:50 },
+    { id:4,  nombre:'Panadol Efervescente', composicion:'Paracetamol 500 mg · 24 tab efervescentes', lab:'Haleon', seccion:'Analgésicos', tipo:'comercial', indicacion:'Alivio rápido del dolor y la fiebre sin irritar el estómago.', punit:2.50, stock:40 },
+    { id:5,  nombre:'Paracetamol 500 mg', composicion:'Paracetamol 500 mg · 100 tab', lab:'Genfar / Portugal', seccion:'Analgésicos', tipo:'generico', indicacion:'Analgésico y antipirético de uso general.', punit:0.50, stock:200 },
+    { id:6,  nombre:'Paracetamol 1 g', composicion:'Paracetamol 1 g · 100 tab', lab:'Portugal', seccion:'Analgésicos', tipo:'generico', indicacion:'Analgésico y antipirético de alta concentración.', punit:2.00, stock:100 },
+    { id:7,  nombre:'Efetamol 1 g', composicion:'Paracetamol 1 g · gránulos efervescentes', lab:'Diphasac', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico efervescente de disolución rápida.', punit:2.50, stock:30 },
+    { id:8,  nombre:'Alicam Forte', composicion:'Paracetamol 500 mg · 100 tab', lab:'Pharmed Corporation', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antipirético para dolores y fiebre.', punit:1.00, stock:100 },
+    { id:9,  nombre:'Supracalm', composicion:'Paracetamol 1 g · 10 comprimidos', lab:'Tecnofarma', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico de alta potencia para dolores intensos.', punit:3.00, stock:30 },
+    { id:10, nombre:'Ibuprofeno 400 mg', composicion:'Ibuprofeno 400 mg · 100 tab', lab:'Genfar / Portugal', seccion:'Analgésicos', tipo:'generico', indicacion:'Analgésico, antipirético y antiinflamatorio.', punit:0.50, stock:200 },
+    { id:11, nombre:'IBUCalm 200', composicion:'Ibuprofeno 200 mg · 100 cáps blandas', lab:'Diphasac', seccion:'Analgésicos', tipo:'comercial', indicacion:'Ibuprofeno en cápsula blanda para mayor absorción.', punit:2.00, stock:80 },
+    { id:12, nombre:'Dolonet Forte', composicion:'Ibuprofeno 400 mg · cápsula blanda', lab:'LP', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antiinflamatorio en cápsula blanda.', punit:2.00, stock:60 },
+    { id:13, nombre:'Mepadol Extra Forte', composicion:'Ibuprofeno 600 mg · 100 tab', lab:'Pharma Genéricos', seccion:'Analgésicos', tipo:'comercial', indicacion:'Antiinflamatorio, antipirético y analgésico potente.', punit:2.00, stock:60 },
+    { id:14, nombre:'Na\'flex Mujer', composicion:'Ibuprofeno 200 mg · cápsula blanda', lab:'Diphasac', seccion:'Analgésicos', tipo:'comercial', indicacion:'Ibuprofeno específico para el alivio del dolor menstrual.', punit:2.00, stock:40 },
+    { id:15, nombre:'Plidocheck Plus 400 mg', composicion:'Ibuprofeno 400 mg · 100 cáps blandas', lab:'Bonapharm', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antiinflamatorio en cápsula blanda.', punit:1.50, stock:50 },
+    { id:16, nombre:'Doloibupress Forte', composicion:'Ibuprofeno 200 mg + Paracetamol 500 mg · 100 tab', lab:'Pharmed Corporation', seccion:'Analgésicos', tipo:'comercial', indicacion:'Combinación analgésica potente para dolores moderados.', punit:1.50, stock:80 },
+    { id:17, nombre:'PalDolor Extra Forte F', composicion:'Ibuprofeno 200 mg + Paracetamol 500 mg · 200 tab', lab:'Hersil', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antiinflamatorio de doble acción.', punit:1.50, stock:100 },
+    { id:18, nombre:'Naproxeno Sódico 550 mg', composicion:'Naproxeno Sódico 550 mg · 100 tab', lab:'Portugal', seccion:'Antiinflamatorios', tipo:'generico', indicacion:'Antiinflamatorio no esteroideo para dolor y artritis.', punit:1.00, stock:100 },
+    { id:19, nombre:'Iraxén', composicion:'Naproxeno Sódico 550 mg · 100 comprimidos', lab:'Quilab', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'AINE para dolor, inflamación y fiebre.', punit:1.60, stock:60 },
+    { id:20, nombre:'Aproflam', composicion:'Naproxeno Sódico · 100 tab', lab:'LP', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'Antiinflamatorio y analgésico.', punit:2.00, stock:50 },
+    { id:21, nombre:'Reprimán 500 mg', composicion:'Metamizol Sódico 500 mg · 100 comprimidos', lab:'Quilab', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antipirético potente.', punit:0.50, stock:100 },
+    { id:22, nombre:'Ergonex Plus', composicion:'Cafeína 100 mg + Ergotamina 1 mg + Paracetamol · tab', lab:'Laboratorio', seccion:'Analgésicos', tipo:'comercial', indicacion:'Para tratamiento de la migraña y cefaleas.', punit:2.30, stock:40 },
+    { id:23, nombre:'GripaMaxx', composicion:'Paracetamol 325 mg + Dextrometorfano + Fenilefrina · 120 cáps', lab:'Diphasac', seccion:'Antigripales', tipo:'comercial', indicacion:'Alivia síntomas del resfriado: dolor, tos y congestión.', punit:3.00, stock:60 },
+    { id:24, nombre:'Chao NF', composicion:'Paracetamol 500 mg + Fenilefrina + Clorfenamina · 100 tab', lab:'Laboratorio', seccion:'Antigripales', tipo:'comercial', indicacion:'Contra los malestares de la gripe.', punit:2.50, stock:60 },
+    { id:25, nombre:'Resfliu', composicion:'Paracetamol 500 mg + Fenilefrina + Clorfenamina · 100 tab', lab:'LP', seccion:'Antigripales', tipo:'comercial', indicacion:'Alivia síntomas de la gripe y el resfrío.', punit:1.50, stock:80 },
+    { id:26, nombre:'Dexalor Plus', composicion:'Betametasona 0.25 mg + Dexclorfeniramina 2 mg · 100 tab', lab:'LP', seccion:'Antihistamínicos', tipo:'comercial', indicacion:'Antihistamínico y antiinflamatorio para alergias.', punit:2.00, stock:40 },
+    { id:27, nombre:'Tadoflex', composicion:'Paracetamol 300 mg + Clorzoxazona · 100 tab', lab:'LP', seccion:'Analgésicos', tipo:'comercial', indicacion:'Relajante muscular y analgésico.', punit:3.00, stock:50 },
+    { id:28, nombre:'Diclofenaco 50 mg', composicion:'Diclofenaco Sódico 50 mg · 100 tab', lab:'IQFARMA / Genfar', seccion:'Antiinflamatorios', tipo:'generico', indicacion:'AINE para dolor e inflamación osteoarticular.', punit:0.40, stock:200 },
+    { id:29, nombre:'Dolocordralan Forte', composicion:'Diclofenaco Sódico 100 mg · tab liberación prolongada', lab:'Laboratorio', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'Antiinflamatorio de liberación prolongada.', punit:1.50, stock:40 },
+    { id:30, nombre:'Dolocordralan Extra Forte NF', composicion:'Diclofenaco 50 mg + Tiamina + Piridoxina + Cianocobalamina · 204 cáps', lab:'Laboratorio', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'Antiinflamatorio con complejo vitamínico B.', punit:2.50, stock:50 },
+    { id:31, nombre:'Orfenadrina 100 mg', composicion:'Orfenadrina 100 mg · tab liberación prolongada', lab:'Portugal', seccion:'Analgésicos', tipo:'generico', indicacion:'Relajante muscular para contracturas y dolor.', punit:1.00, stock:60 },
+    { id:32, nombre:'MioDel Relax NF', composicion:'Paracetamol 450 mg + Orfenadrina 35 mg · 100 tab', lab:'LP Laboratorios', seccion:'Analgésicos', tipo:'comercial', indicacion:'Relajante muscular y analgésico combinado.', punit:2.50, stock:40 },
+
+    // ── ANTIBIÓTICOS ──
+    { id:33, nombre:'Amoxicilina 500 mg', composicion:'Amoxicilina 500 mg · 100 cáps', lab:'Portugal', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico de amplio espectro para infecciones bacterianas.', punit:0.50, stock:200 },
+    { id:34, nombre:'Bactamox (Amoxicilina) 500 mg', composicion:'Amoxicilina 500 mg · 100 cáps', lab:'OQ Pharmaceutical', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico betalactámico para infecciones bacterianas.', punit:1.50, stock:80 },
+    { id:35, nombre:'Azitromicina 500 mg', composicion:'Azitromicina 500 mg · 100 tab', lab:'Portugal', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico macrólido para infecciones respiratorias y de piel.', punit:2.00, stock:100 },
+    { id:36, nombre:'Amoxicilina + Ác. Clavulánico 500/125 mg', composicion:'Amoxicilina 500 mg + Ácido Clavulánico 125 mg · 10 tab', lab:'Pharma Genéricos', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico de amplio espectro resistente a betalactamasas.', punit:4.50, stock:60 },
+    { id:37, nombre:'Proflox-CL 500/125 mg', composicion:'Amoxicilina 500 mg + Ácido Clavulánico 125 mg · 10 tab', lab:'Bonapharm', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico betalactámico combinado.', punit:3.50, stock:50 },
+    { id:38, nombre:'Amoxelin 875/125 mg', composicion:'Amoxicilina 875 mg + Ácido Clavulánico 125 mg · 42 tab', lab:'LP', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico betalactámico de alta potencia.', punit:4.50, stock:40 },
+    { id:39, nombre:'Bactrim Forte', composicion:'Sulfametoxazol 800 mg + Trimetoprima 160 mg · 100 comprimidos', lab:'Sagebsa', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico para infecciones urinarias y respiratorias.', punit:2.00, stock:80 },
+    { id:40, nombre:'Bacterol Forte', composicion:'Sulfametoxazol 800 mg + Trimetoprima 160 mg · 20 tab', lab:'Laboratorio', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico combinado para infecciones bacterianas.', punit:2.50, stock:60 },
+    { id:41, nombre:'Eritromicina 500 mg', composicion:'Eritromicina 500 mg · cáps', lab:'Genfar', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico macrólido para infecciones de vías respiratorias.', punit:1.00, stock:80 },
+    { id:42, nombre:'Dicloxacilina 500 mg', composicion:'Dicloxacilina 500 mg · 100 cáps', lab:'Portugal', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico para infecciones por estafilococos.', punit:0.80, stock:100 },
+    { id:43, nombre:'Doxiciclina 100 mg', composicion:'Doxiciclina 100 mg · 100 tab/cáps', lab:'Portugal / AC Farma', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico tetraciclina de amplio espectro.', punit:1.00, stock:100 },
+    { id:44, nombre:'Biobroncol S (Cefalexina 500 mg)', composicion:'Cefalexina 500 mg · 12 cáps', lab:'IQFARMA', seccion:'Antibióticos', tipo:'comercial', indicacion:'Antibiótico cefalosporina para infecciones de piel y vías urinarias.', punit:3.50, stock:40 },
+    { id:45, nombre:'Cloranfenicol', composicion:'Cloranfenicol · 100 cáps', lab:'IQFARMA', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico de amplio espectro para infecciones graves.', punit:2.50, stock:50 },
+    { id:46, nombre:'Dicloxacilina 250 mg/5 mL Susp.', composicion:'Dicloxacilina 250 mg/5 mL · polvo 60 mL', lab:'Portugal', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico en suspensión para niños con infecciones por estafilococos.', punit:8.00, stock:30 },
+    { id:47, nombre:'Amoxicilina + Ác. Clavulánico 250/62.5 mg Susp', composicion:'Amoxicilina + Ácido Clavulánico · polvo 60 mL', lab:'Portugal', seccion:'Pediátricos', tipo:'generico', indicacion:'Antibiótico combinado en suspensión para niños.', punit:14.50, stock:25 },
+
+    // ── ANTIHISTAMÍNICOS ──
+    { id:48, nombre:'Loratadina 10 mg', composicion:'Loratadina 10 mg · 100 tab', lab:'Farmindustria', seccion:'Antihistamínicos', tipo:'generico', indicacion:'Antihistamínico para rinitis alérgica y urticaria.', punit:2.00, stock:100 },
+    { id:49, nombre:'Clorophen (Clorfenamina 4 mg)', composicion:'Clorfenamina Maleato 4 mg · 100 tab', lab:'Pharmed Corporation', seccion:'Antihistamínicos', tipo:'comercial', indicacion:'Antihistamínico para alergias e irritaciones.', punit:1.00, stock:80 },
+    { id:50, nombre:'Desloratadina 5 mg', composicion:'Desloratadina 5 mg · 100 tab', lab:'LaboGen', seccion:'Antihistamínicos', tipo:'generico', indicacion:'Antihistamínico de segunda generación sin somnolencia.', punit:0.70, stock:100 },
+    { id:51, nombre:'Neoalergine Plus (Cetirizina 10 mg)', composicion:'Cetirizina Clorhidrato 10 mg · 30 cáps blandas', lab:'Bonapharm', seccion:'Antihistamínicos', tipo:'comercial', indicacion:'Antihistamínico para alergias estacionales y urticaria.', punit:1.50, stock:60 },
+    { id:52, nombre:'Levitor (Levocetirizina 5 mg)', composicion:'Levocetirizina 5 mg · 100 tab', lab:'LP', seccion:'Antihistamínicos', tipo:'comercial', indicacion:'Antihistamínico potente para alergias.', punit:1.50, stock:50 },
+    { id:53, nombre:'Levocetirizina 5 mg', composicion:'Levocetirizina 5 mg · 100 tab', lab:'LaboGen', seccion:'Antihistamínicos', tipo:'generico', indicacion:'Antihistamínico de última generación.', punit:0.70, stock:80 },
+    { id:54, nombre:'Dexametasona 4 mg', composicion:'Dexametasona 4 mg · 100 tab', lab:'Portugal', seccion:'Antiinflamatorios', tipo:'generico', indicacion:'Corticosteroide para inflamación, alergias y enfermedades autoinmunes.', punit:0.50, stock:100 },
+    { id:55, nombre:'Mexadet (Dexametasona)', composicion:'Dexametasona 4 mg · tab', lab:'Laboratorio', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'Corticosteroide de uso sistémico.', punit:1.00, stock:60 },
+    { id:56, nombre:'Clorfenamina Maleato 2 mg/5 mL Jarabe', composicion:'Clorfenamina 2 mg/5 mL · solución oral 120 mL', lab:'Portugal', seccion:'Pediátricos', tipo:'generico', indicacion:'Antihistamínico en jarabe para niños con alergias.', punit:6.00, stock:30 },
+    { id:57, nombre:'Cetirizina 5 mg/5 mL Solución', composicion:'Cetirizina 5 mg/5 mL · solución oral 60 mL', lab:'Portugal', seccion:'Pediátricos', tipo:'generico', indicacion:'Antihistamínico líquido para niños.', punit:6.00, stock:25 },
+
+    // ── GASTROENTEROLOGÍA ──
+    { id:58, nombre:'Omeprazol 20 mg', composicion:'Omeprazol 20 mg · 100 cáps', lab:'MS Pharma / DANY', seccion:'Gastroenterología', tipo:'generico', indicacion:'Inhibidor de bomba de protones para gastritis y úlceras.', punit:0.50, stock:200 },
+    { id:59, nombre:'Esomeprazol 20 mg', composicion:'Esomeprazol 20 mg · 30 tab liberación retardada', lab:'Bonapharm', seccion:'Gastroenterología', tipo:'generico', indicacion:'Inhibidor de bomba de protones de nueva generación.', punit:1.20, stock:80 },
+    { id:60, nombre:'Gaseobal (Simeticona 125 mg)', composicion:'Simeticona 125 mg · 100 cáps blandas', lab:'Laboratorio', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antiinflatulento para gases y distensión abdominal.', punit:2.00, stock:60 },
+    { id:61, nombre:'Simeticona 80 mg', composicion:'Simeticona 80 mg · 30 tab masticables', lab:'IQFARMA', seccion:'Gastroenterología', tipo:'generico', indicacion:'Para gases y flatulencias.', punit:0.80, stock:80 },
+    { id:62, nombre:'Nopasmoll', composicion:'Hioscina 10 mg + Paracetamol 500 mg · 100 tab', lab:'LP', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antiespasmódico y analgésico para dolor abdominal.', punit:2.00, stock:60 },
+    { id:63, nombre:'Gineprox Compositum', composicion:'Hioscina 10 mg + Metamizol 250 mg · 100 tab', lab:'LP', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Analgésico y antiespasmódico para cólicos.', punit:2.00, stock:50 },
+    { id:64, nombre:'Floratil 250 mg', composicion:'Saccharomyces boulardii 250 mg · 10 cáps', lab:'Laboratorio', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Probiótico para diarrea y restauración de flora intestinal.', punit:4.50, stock:40 },
+    { id:65, nombre:'Darrex (Loperamida)', composicion:'Loperamida 2 mg · 100 cáps', lab:'LP', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antidiarreico para el control de la diarrea aguda.', punit:4.50, stock:50 },
+    { id:66, nombre:'Bismutol', composicion:'Subsalicilato de Bismuto · frasco', lab:'Laboratorio', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Alivio de acidez, indigestión, diarrea y náuseas.', punit:1.50, stock:40 },
+    { id:67, nombre:'Ciruelax Té', composicion:'Cassia angustifolia · 30 filtrantes', lab:'Garden House', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Laxante natural de origen vegetal.', punit:1.30, stock:50 },
+    { id:68, nombre:'Dilolax Retard (Bisacodilo 5 mg)', composicion:'Bisacodilo 5 mg · 100 tab liberación retardada', lab:'OQ Pharmaceutical', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Laxante para el estreñimiento.', punit:1.50, stock:60 },
+    { id:69, nombre:'Bisacodilo 5 mg', composicion:'Bisacodilo 5 mg · 100 tab', lab:'AC Farma', seccion:'Gastroenterología', tipo:'generico', indicacion:'Laxante estimulante para estreñimiento.', punit:1.50, stock:60 },
+    { id:70, nombre:'Magnesol', composicion:'Magnesio + Zinc · suplemento nutricional 33/5g', lab:'Laboratorio', seccion:'Suplementos', tipo:'comercial', indicacion:'Suplemento de magnesio y zinc para el organismo.', punit:1.50, stock:30 },
+    { id:71, nombre:'Nitoxadin 100 mg/5 mL', composicion:'Nitazoxanida 100 mg/5 mL · polvo 60 mL', lab:'Portugal', seccion:'Antiparasitarios', tipo:'generico', indicacion:'Antiparasitario para Giardia, Cryptosporidium y otras parasitosis.', punit:20.00, stock:20 },
+    { id:72, nombre:'Nitoxadin 500 mg', composicion:'Nitazoxanida 500 mg · 6 tab', lab:'Portugal', seccion:'Antiparasitarios', tipo:'generico', indicacion:'Antiparasitario de amplio espectro.', punit:24.00, stock:20 },
+    { id:73, nombre:'Parasitel (Albendazol 200 mg)', composicion:'Albendazol 200 mg · tab', lab:'Markos', seccion:'Antiparasitarios', tipo:'comercial', indicacion:'Antihelmíntico para lombricosis y otras parasitosis.', punit:4.50, stock:40 },
+    { id:74, nombre:'Albendazol 100 mg/5 mL Susp.', composicion:'Albendazol 100 mg/5 mL · 2 frascos x 20 mL', lab:'Farmindustria', seccion:'Antiparasitarios', tipo:'generico', indicacion:'Antihelmíntico en suspensión para niños.', punit:5.00, stock:30 },
+    { id:75, nombre:'Metronidazol 500 mg', composicion:'Metronidazol 500 mg · 100 tab', lab:'Genfar', seccion:'Antibióticos', tipo:'generico', indicacion:'Antibiótico para infecciones por anaerobios y parásitos.', punit:1.00, stock:100 },
+    { id:76, nombre:'Vitathon', composicion:'Complejo B + Vitaminas · suplemento', lab:'Abbott', seccion:'Suplementos', tipo:'comercial', indicacion:'Suplemento vitamínico para el fortalecimiento del organismo.', punit:2.00, stock:50 },
+
+    // ── CARDIOVASCULAR ──
+    { id:77, nombre:'Losartán Potásico 50 mg', composicion:'Losartán Potásico 50 mg · 100 tab', lab:'AC Farma / Portugal', seccion:'Cardiovascular', tipo:'generico', indicacion:'Antihipertensivo ARA-II para la hipertensión arterial.', punit:0.90, stock:100 },
+    { id:78, nombre:'Furosemida 40 mg', composicion:'Furosemida 40 mg · 100 tab', lab:'IQFARMA', seccion:'Cardiovascular', tipo:'generico', indicacion:'Diurético de asa para hipertensión e insuficiencia cardíaca.', punit:0.30, stock:150 },
+    { id:79, nombre:'Angidex NF (Nifedipino 30 mg)', composicion:'Nifedipino 30 mg · 30 tab liberación prolongada', lab:'Portugal', seccion:'Cardiovascular', tipo:'comercial', indicacion:'Calcioantagonista para hipertensión y angina de pecho.', punit:2.00, stock:40 },
+    { id:80, nombre:'Captopril 25 mg', composicion:'Captopril 25 mg · 100 tab', lab:'Farmindustria', seccion:'Cardiovascular', tipo:'generico', indicacion:'IECA para hipertensión arterial e insuficiencia cardíaca.', punit:0.10, stock:200 },
+    { id:81, nombre:'Tamsulosina 0.4 mg', composicion:'Tamsulosina 0.4 mg · 30 cáps liberación prolongada', lab:'Bonapharm', seccion:'Urología', tipo:'generico', indicacion:'Para el tratamiento de la hiperplasia prostática benigna.', punit:1.50, stock:40 },
+    { id:82, nombre:'Bisoprolol Fumarato 5 mg', composicion:'Bisoprolol Fumarato 5 mg · 30 tab', lab:'QM Pharma', seccion:'Cardiovascular', tipo:'generico', indicacion:'Betabloqueador para hipertensión y enfermedades cardíacas.', punit:1.50, stock:30 },
+    { id:83, nombre:'Gemfibrozilo 600 mg', composicion:'Gemfibrozilo 600 mg · 20 tab', lab:'IQFARMA', seccion:'Cardiovascular', tipo:'generico', indicacion:'Para reducir triglicéridos y colesterol elevados.', punit:2.00, stock:30 },
+
+    // ── RESPIRATORIO ──
+    { id:84, nombre:'Salbutamol 100 mcg/dosis', composicion:'Salbutamol 100 mcg/dosis · aerosol 200 dosis', lab:'LABOT / Pharma Genéricos', seccion:'Respiratorio', tipo:'generico', indicacion:'Broncodilatador para asma y EPOC.', punit:12.00, stock:25 },
+    { id:85, nombre:'Ventusol (Salbutamol 5 mg/mL)', composicion:'Salbutamol 5 mg/mL · solución nebulización', lab:'Farmasur', seccion:'Respiratorio', tipo:'comercial', indicacion:'Broncodilatador para nebulización.', punit:20.00, stock:20 },
+    { id:86, nombre:'Merifar (Metoclopramida HCl 4 mg/mL)', composicion:'Metoclopramida HCl 4 mg/mL · solución 15 mL', lab:'Laboratorios Indufar', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antiemético y procinético para náuseas y vómitos.', punit:25.00, stock:15 },
+    { id:87, nombre:'Ambroxol 30 mg/5 mL', composicion:'Ambroxol 30 mg/5 mL · solución oral 120 mL', lab:'Portugal', seccion:'Respiratorio', tipo:'generico', indicacion:'Mucolítico para flemas y tos con mucosidad.', punit:7.00, stock:30 },
+    { id:88, nombre:'Ambroxol Pediátrico 15 mg/5 mL', composicion:'Ambroxol 15 mg/5 mL · solución oral 120 mL', lab:'Portugal', seccion:'Pediátricos', tipo:'generico', indicacion:'Mucolítico pediátrico para flemas y tos.', punit:7.00, stock:30 },
+    { id:89, nombre:'Dextrometorfano 15 mg/5 mL', composicion:'Dextrometorfano 15 mg/5 mL · solución 120 mL', lab:'Portugal', seccion:'Respiratorio', tipo:'generico', indicacion:'Antitusígeno para tos seca.', punit:7.50, stock:30 },
+    { id:90, nombre:'Otidol (Solución Ótica 5 mL)', composicion:'Solución ótica · 5 mL', lab:'Lansier', seccion:'Otros', tipo:'comercial', indicacion:'Para el dolor e infecciones del oído externo.', punit:13.00, stock:20 },
+    { id:91, nombre:'Floril (Solución Oftálmica)', composicion:'Solución oftálmica · 15 mL', lab:'Lansier', seccion:'Otros', tipo:'comercial', indicacion:'Para el tratamiento de afecciones oculares.', punit:13.50, stock:20 },
+    { id:92, nombre:'Gentamicina 0.3% Gotas', composicion:'Gentamicina 0.3% · solución oftálmica 5 mL', lab:'Laboratorio', seccion:'Otros', tipo:'generico', indicacion:'Antibiótico oftálmico para conjuntivitis bacteriana.', punit:6.50, stock:25 },
+    { id:93, nombre:'Paracetamol 100 mg/mL Gotas', composicion:'Paracetamol 100 mg/mL · gotas orales 15 mL', lab:'Portugal', seccion:'Pediátricos', tipo:'generico', indicacion:'Analgésico y antipirético en gotas para bebés.', punit:7.00, stock:30 },
+    { id:94, nombre:'Tapsin Plus DÍA', composicion:'Paracetamol 650 mg + Clorfenamina + Dextrometorfano · 60 sobres', lab:'Laboratorio', seccion:'Antigripales', tipo:'comercial', indicacion:'Para los síntomas de la gripe durante el día.', punit:3.30, stock:30 },
+    { id:95, nombre:'Tapsin Plus NOCHE', composicion:'Paracetamol 650 mg + Clorfenamina + Dextrometorfano · 60 sobres', lab:'Laboratorio', seccion:'Antigripales', tipo:'comercial', indicacion:'Para los síntomas de la gripe durante la noche.', punit:2.50, stock:30 },
+    { id:96, nombre:'Bronquitos (Broncodilatador)', composicion:'Clenbuterol + Ambroxol · jarabe', lab:'Laboratorio', seccion:'Respiratorio', tipo:'comercial', indicacion:'Broncodilatador y expectorante para asma y bronquitis.', punit:13.00, stock:20 },
+    { id:97, nombre:'Flamalgésico Ibuprofeno 100 mg/5 mL', composicion:'Ibuprofeno 100 mg/5 mL · suspensión 60 mL', lab:'Sherfarma', seccion:'Pediátricos', tipo:'comercial', indicacion:'Analgésico y antipirético para niños.', punit:10.00, stock:25 },
+    { id:98, nombre:'Paracetamol Pediátrico 160 mg/5 mL', composicion:'Paracetamol 160 mg/5 mL · jarabe 120 mL', lab:'Genfar Kids', seccion:'Pediátricos', tipo:'generico', indicacion:'Analgésico y antipirético para niños desde 2 años.', punit:7.50, stock:30 },
+    { id:99, nombre:'Panadol Niños 2-11 años', composicion:'Paracetamol 160 mg/5 mL · jarabe 60 mL', lab:'GSK', seccion:'Pediátricos', tipo:'comercial', indicacion:'Analgésico y antipirético para niños de 2 a 11 años.', punit:20.50, stock:30 },
+    { id:100,nombre:'Ibuprofeno 100 mg/5 mL Susp.', composicion:'Ibuprofeno 100 mg/5 mL · suspensión 80 mL', lab:'Portugal / IQFARMA', seccion:'Pediátricos', tipo:'generico', indicacion:'Antiinflamatorio y antipirético en suspensión para niños.', punit:6.50, stock:30 },
+
+    // ── DERMATOLOGÍA ──
+    { id:101,nombre:'Aciclovir 5% Crema', composicion:'Aciclovir 5% · crema 5 g', lab:'Farmindustria / Portugal', seccion:'Dermatología', tipo:'generico', indicacion:'Antiviral tópico para herpes labial y herpes zóster.', punit:5.50, stock:50 },
+    { id:102,nombre:'Aciclovir 200 mg', composicion:'Aciclovir 200 mg · 100 tab', lab:'Portugal', seccion:'Dermatología', tipo:'generico', indicacion:'Antiviral oral para herpes simple y varicela.', punit:0.50, stock:100 },
+    { id:103,nombre:'Aciclovir 400 mg', composicion:'Aciclovir 400 mg · 100 tab', lab:'Induquimica', seccion:'Dermatología', tipo:'generico', indicacion:'Antiviral de mayor concentración para herpes.', punit:0.70, stock:80 },
+    { id:104,nombre:'Aciclovir 800 mg', composicion:'Aciclovir 800 mg · 10 tab', lab:'AC Farma', seccion:'Dermatología', tipo:'generico', indicacion:'Antiviral de alta concentración para herpes zóster.', punit:2.00, stock:50 },
+    { id:105,nombre:'Roxtil B Crema 20 g', composicion:'Clotrimazol 1% + Gentamicina 0.1% + Betametasona 0.05% · 20 g', lab:'Roxfarma', seccion:'Dermatología', tipo:'comercial', indicacion:'Crema triple acción: antimicótico, antibiótico y antiinflamatorio.', punit:12.00, stock:30 },
+    { id:106,nombre:'Portil NF Crema 20 g', composicion:'Clotrimazol + Gentamicina + Betametasona · 20 g', lab:'Portugal', seccion:'Dermatología', tipo:'comercial', indicacion:'Crema antimicótica, antibacteriana y antiinflamatoria.', punit:7.50, stock:30 },
+    { id:107,nombre:'Ketoconazol 2% Crema', composicion:'Ketoconazol 2% · crema 20 g', lab:'Portugal', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico tópico para hongos, dermatitis seborreica y tiña.', punit:7.50, stock:40 },
+    { id:108,nombre:'Ketoconazol 200 mg', composicion:'Ketoconazol 200 mg · 100 tab', lab:'Portugal', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico oral para infecciones fúngicas sistémicas.', punit:1.00, stock:60 },
+    { id:109,nombre:'Terbinafina 1% Crema', composicion:'Terbinafina 1% · crema 20 g', lab:'Portugal / Genfar', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico tópico para pie de atleta y tiña.', punit:7.00, stock:50 },
+    { id:110,nombre:'Terbinafina 250 mg', composicion:'Terbinafina 250 mg · 100 tab', lab:'LaboGen', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico oral para onicomicosis y tiña.', punit:1.50, stock:60 },
+    { id:111,nombre:'Fluconazol 150 mg', composicion:'Fluconazol 150 mg · 100 cáps', lab:'Portugal', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico oral para candidiasis y otros hongos.', punit:1.20, stock:60 },
+    { id:112,nombre:'Clotrimazol 1% Crema', composicion:'Clotrimazol 1% · tubo 20 g', lab:'AC Farma', seccion:'Antimicóticos', tipo:'generico', indicacion:'Antimicótico tópico para candidiasis y tiña.', punit:4.50, stock:50 },
+    { id:113,nombre:'Diclofenaco 1% Gel', composicion:'Diclofenaco 1% · gel 50 g', lab:'Portugal', seccion:'Antiinflamatorios', tipo:'generico', indicacion:'Antiinflamatorio tópico para dolor muscular y articular.', punit:6.00, stock:40 },
+    { id:114,nombre:'Escaldex Crema 20 g', composicion:'Crema protectora para bebés y niños · 20 g', lab:'Hersil', seccion:'Dermatología', tipo:'comercial', indicacion:'Crema protectora y tratamiento del eritema del pañal.', punit:21.50, stock:20 },
+    { id:115,nombre:'Sitiderm NF Crema', composicion:'Betametasona 0.05% + Gentamicina 0.1% + Clotrimazol · crema', lab:'Medifarma', seccion:'Dermatología', tipo:'comercial', indicacion:'Crema antiinflamatoria, antibiótica y antimicótica.', punit:13.00, stock:25 },
+    { id:116,nombre:'Betametasona 0.05% Crema', composicion:'Betametasona 0.05% · crema 20 g', lab:'Pharma Genéricos', seccion:'Dermatología', tipo:'generico', indicacion:'Corticosteroide tópico para dermatitis y eczema.', punit:1.00, stock:50 },
+    { id:117,nombre:'Metronidazol 500 mg Óvulos', composicion:'Metronidazol 500 mg · 10 óvulos', lab:'Portugal', seccion:'Ginecología', tipo:'generico', indicacion:'Antibiótico vaginal para vaginitis bacteriana y tricomoniasis.', punit:1.50, stock:40 },
+    { id:118,nombre:'Posulen Óvulos', composicion:'Policresuleno 90 mg · 6 óvulos', lab:'Roxfarma', seccion:'Ginecología', tipo:'comercial', indicacion:'Para lesiones cervicovaginales e inflamaciones vaginales.', punit:7.00, stock:25 },
+    { id:119,nombre:'Saniderm Crema 15 g', composicion:'Terbinafina Clorhidrato 1% · crema 15 g', lab:'LP', seccion:'Antimicóticos', tipo:'comercial', indicacion:'Antimicótico tópico para tiña y dermatofitosis.', punit:1.00, stock:40 },
+    { id:120,nombre:'Betametasona (Metasona) 0.05% Crema', composicion:'Betametasona 0.05% · tubo 20 g', lab:'Pharma Genéricos', seccion:'Dermatología', tipo:'generico', indicacion:'Corticosteroide tópico antiinflamatorio.', punit:1.00, stock:60 },
+    { id:121,nombre:'Prednisona 50 mg', composicion:'Prednisona 50 mg · 100 tab', lab:'AC Farma', seccion:'Antiinflamatorios', tipo:'generico', indicacion:'Corticosteroide oral para enfermedades inflamatorias y alérgicas.', punit:0.80, stock:80 },
+
+    // ── NEUROLOGÍA ──
+    { id:122,nombre:'Gabapentina 300 mg', composicion:'Gabapentina 300 mg · 100 tab', lab:'Pharma Genéricos', seccion:'Neurología', tipo:'generico', indicacion:'Para el dolor neuropático y epilepsia.', punit:0.50, stock:100 },
+    { id:123,nombre:'Pregabalina 150 mg', composicion:'Pregabalina 150 mg · 30 cáps', lab:'Bonapharm', seccion:'Neurología', tipo:'generico', indicacion:'Para dolor neuropático, fibromialgia y ansiedad generalizada.', punit:1.50, stock:50 },
+    { id:124,nombre:'Clonazepam 0.5 mg', composicion:'Clonazepam 0.5 mg · 100 tab', lab:'AC Farma', seccion:'Neurología', tipo:'generico', indicacion:'Ansiolítico y anticonvulsivante (requiere receta).', punit:0.50, stock:60 },
+    { id:125,nombre:'C-Brex (Celecoxib 200 mg)', composicion:'Celecoxib 200 mg · 100 cáps', lab:'LP', seccion:'Antiinflamatorios', tipo:'comercial', indicacion:'AINE COX-2 selectivo para artritis y dolor crónico.', punit:2.00, stock:40 },
+
+    // ── DIABETES ──
+    { id:126,nombre:'Metformina 850 mg', composicion:'Metformina 850 mg · 100 tab', lab:'Pharma Genéricos', seccion:'Diabetes', tipo:'generico', indicacion:'Hipoglucemiante oral para diabetes tipo 2.', punit:0.50, stock:150 },
+
+    // ── ANTIEMÉTICO / ANTIVERTIGINOSO ──
+    { id:127,nombre:'Nausicalm (Dimenhidrinato)', composicion:'Dimenhidrinato 24 mg/6 mL · solución oral', lab:'Farvet', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antiemético y antivertiginoso para náuseas y mareos.', punit:2.00, stock:30 },
+    { id:128,nombre:'Vomixtal (Dimenhidrinato 50 mg)', composicion:'Dimenhidrinato 50 mg · 100 tab', lab:'Roxfarma', seccion:'Gastroenterología', tipo:'comercial', indicacion:'Antiemético para náuseas y vómitos.', punit:7.50, stock:40 },
+    { id:129,nombre:'Paramidon NF', composicion:'Paracetamol + Ácido Acetilsalicílico + Cafeína · 100 tab', lab:'IQFARMA', seccion:'Analgésicos', tipo:'comercial', indicacion:'Analgésico y antipirético de triple acción.', punit:2.50, stock:50 },
+
+    // ── GINECOLOGÍA / ANTICONCEPTIVOS ──
+    { id:130,nombre:'Marleny (Levonorgestrel 1.5 mg)', composicion:'Levonorgestrel 1.5 mg · 1 tab (anticonceptivo emergencia)', lab:'LP', seccion:'Ginecología', tipo:'comercial', indicacion:'Anticonceptivo de emergencia (píldora del día siguiente).', punit:10.00, stock:20 },
+    { id:131,nombre:'Damicocyn 1.5 mg', composicion:'Levonorgestrel 1.5 mg · 1 tab', lab:'Bonapharm', seccion:'Ginecología', tipo:'comercial', indicacion:'Anticonceptivo de emergencia.', punit:15.00, stock:20 },
+    { id:132,nombre:'Nogestrol 1 (Levonorgestrel 1.5 mg)', composicion:'Levonorgestrel 1.5 mg · 1 tab', lab:'AC Farma', seccion:'Ginecología', tipo:'comercial', indicacion:'Anticonceptivo de emergencia.', punit:13.00, stock:20 },
+    { id:133,nombre:'Levonorgestrel 0.75 mg', composicion:'Levonorgestrel 0.75 mg · 20 tab', lab:'AC Farma', seccion:'Ginecología', tipo:'generico', indicacion:'Anticonceptivo de emergencia en dos tomas.', punit:13.00, stock:20 },
+
+    // ── UROLOGÍA ──
+    { id:134,nombre:'Vergus (Sildenafilo 100 mg)', composicion:'Sildenafilo 100 mg · 40 tab', lab:'LP', seccion:'Urología', tipo:'comercial', indicacion:'Tratamiento de la disfunción eréctil (requiere receta).', punit:4.00, stock:30 },
+    { id:135,nombre:'Sildenafilo 100 mg', composicion:'Sildenafilo 100 mg · 10 tab', lab:'AC Farma', seccion:'Urología', tipo:'generico', indicacion:'Tratamiento de la disfunción eréctil (requiere receta).', punit:3.00, stock:30 },
+    { id:136,nombre:'Sildenafilo 50 mg', composicion:'Sildenafilo 50 mg · 100 tab', lab:'Generion Pharma', seccion:'Urología', tipo:'generico', indicacion:'Tratamiento de la disfunción eréctil (requiere receta).', punit:2.50, stock:30 },
+
+    // ── ANALGÉSICOS ESPECÍFICOS ──
+    { id:137,nombre:'Sulfato de Magnesio Lucerito', composicion:'Sulfato de Magnesio · 50 unidades', lab:'Lucerito', seccion:'Otros', tipo:'comercial', indicacion:'Para el tratamiento de la eclampsia y como laxante.', punit:4.00, stock:20 },
+    { id:138,nombre:'Gaseovet Simeticona Gotas', composicion:'Simeticona 80 mg · solución gotas', lab:'Medifarma', seccion:'Pediátricos', tipo:'comercial', indicacion:'Antiinflatulento para cólicos e gases en bebés.', punit:29.00, stock:15 },
+  ];
+
+  /* ════════════════════════════════
+     ESTADO
+  ════════════════════════════════ */
+  let todos = [...PRODUCTOS];
+  let filtrados = [...PRODUCTOS];
+  let visibles = 0;
+  let carrito = {};   // { id: { prod, qty } }
+  let formVisible = false;
+
+  /* ─── ÍCONOS ─── */
+  const iconos = {
+    'Analgésicos':'💊','Antibióticos':'🦠','Antiinflamatorios':'🔥',
+    'Antihistamínicos':'🌸','Antigripales':'🤧','Gastroenterología':'🫁',
+    'Cardiovascular':'❤️','Respiratorio':'🫧','Dermatología':'🌿',
+    'Diabetes':'🩸','Antimicóticos':'🍄','Antiparasitarios':'🔬',
+    'Neurología':'🧠','Ginecología':'👩','Urología':'🔵',
+    'Pediátricos':'🍼','Suplementos':'💪','Otros':'🏥'
+  };
+
+  /* ════════════════════════════════
+     FILTRAR
+  ════════════════════════════════ */
+  window.filtrar = function(){
+    const q   = document.getElementById('buscador').value.toLowerCase();
+    const sec = document.getElementById('filtro-seccion').value;
+    const tip = document.getElementById('filtro-tipo').value;
+    filtrados = todos.filter(p=>{
+      const txt = [p.nombre,p.composicion,p.lab,p.indicacion,p.seccion].join(' ').toLowerCase();
+      return (!q || txt.includes(q)) && (!sec || p.seccion===sec) && (!tip || p.tipo===tip);
+    });
+    visibles = 0;
+    document.getElementById('tienda-grid').innerHTML = '';
+    render();
+  };
+
+  /* ════════════════════════════════
+     RENDER
+  ════════════════════════════════ */
+  function render(){
+    const grid = document.getElementById('tienda-grid');
+    const ini  = visibles;
+    const fin  = Math.min(visibles + POR_PAGINA, filtrados.length);
+
+    document.getElementById('info-resultados').textContent =
+      filtrados.length === todos.length
+        ? `Mostrando ${Math.min(fin, filtrados.length)} de ${todos.length} productos`
+        : `${filtrados.length} resultado${filtrados.length!==1?'s':''} encontrado${filtrados.length!==1?'s':''}`;
+
+    if(ini===0 && filtrados.length===0){
+      grid.innerHTML=`<div class="tienda-empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No se encontraron productos con ese criterio.</p></div>`;
+      document.getElementById('ver-mas-wrap').style.display='none';
+      return;
+    }
+    for(let i=ini; i<fin; i++) grid.appendChild(crearTarjeta(filtrados[i]));
+    visibles = fin;
+    document.getElementById('ver-mas-wrap').style.display = visibles<filtrados.length?'block':'none';
+  }
+
+  window.mostrarMas = function(){ render(); };
+
+  /* ════════════════════════════════
+     TARJETA
+  ════════════════════════════════ */
+  function crearTarjeta(p){
+    const stock = p.stock ?? 0;
+    const agotado = stock <= 0;
+    const bajo    = stock > 0 && stock <= 10;
+    const icono   = iconos[p.seccion] || '💊';
+    const enC     = carrito[p.id] ? carrito[p.id].qty : 0;
+
+    const stockHtml = agotado
+      ? '<span class="tprod-stock agotado-badge">⚠️ Agotado</span>'
+      : bajo ? `<span class="tprod-stock bajo">⚡ Solo ${stock} uds</span>`
+             : '<span class="tprod-stock disponible">✅ Disponible</span>';
+
+    const div = document.createElement('div');
+    div.className = 'tprod-card' + (agotado?' agotado':'');
+    div.dataset.id = p.id;
+    div.innerHTML = `
+      <div class="tprod-header">
+        <div class="tprod-badges">
+          <span class="tprod-tipo-badge ${p.tipo}">${p.tipo==='generico'?'Genérico':'Comercial'}</span>
+          <span class="tprod-seccion-badge">${p.seccion}</span>
+        </div>
+        <div class="tprod-icon">${icono}</div>
+        <div class="tprod-nombre">${p.nombre}</div>
+        <div class="tprod-composicion">${p.composicion}</div>
+      </div>
+      <div class="tprod-body">
+        <div class="tprod-lab">🏭 ${p.lab}</div>
+        <div class="tprod-indicacion">${p.indicacion}</div>
+        <div class="tprod-precios">
+          <div class="tprod-precio-item">
+            <strong>S/ ${parseFloat(p.punit||0).toFixed(2)}</strong>
+            <span>por unidad</span>
+          </div>
+        </div>
+        ${stockHtml}
+      </div>
+      <div class="tprod-footer">
+        <div class="tprod-btn-cantidad" id="qty-ctrl-${p.id}">
+          <button onclick="cambiarQty(${p.id},-1)">−</button>
+          <span class="tprod-qty-display" id="qty-${p.id}">${enC||1}</span>
+          <button onclick="cambiarQty(${p.id},1)">+</button>
+        </div>
+        <button class="tprod-btn-agregar ${enC>0?'en-carrito':''}" id="btn-${p.id}" onclick="agregar(${p.id})">
+          ${enC>0?'✓ En carrito':'＋ Agregar'}
+        </button>
+      </div>`;
+    return div;
+  }
+
+  /* ════════════════════════════════
+     CARRITO — LÓGICA
+  ════════════════════════════════ */
+  window.cambiarQty = function(id, delta){
+    const span = document.getElementById('qty-'+id);
+    if(!span) return;
+    let v = parseInt(span.textContent)+delta;
+    if(v<1) v=1;
+    span.textContent = v;
+    if(carrito[id]){ carrito[id].qty=v; actualizarUI(); }
+  };
+
+  window.agregar = function(id){
+    const p = PRODUCTOS.find(x=>x.id===id);
+    if(!p) return;
+    const qty = parseInt(document.getElementById('qty-'+id)?.textContent||'1');
+    if(carrito[id]) carrito[id].qty += qty;
+    else carrito[id] = { prod:p, qty };
+    const btn = document.getElementById('btn-'+id);
+    if(btn){ btn.textContent='✓ En carrito'; btn.classList.add('en-carrito'); }
+    actualizarUI();
+    toast(`✅ ${p.nombre} agregado`);
+    const badge = document.getElementById('carrito-badge');
+    if(badge){ badge.classList.add('bump'); setTimeout(()=>badge.classList.remove('bump'),300); }
+  };
+
+  window.qtyCarrito = function(id, delta){
+    if(!carrito[id]) return;
+    carrito[id].qty += delta;
+    if(carrito[id].qty<=0){
+      delete carrito[id];
+      const btn = document.getElementById('btn-'+id);
+      if(btn){ btn.textContent='＋ Agregar'; btn.classList.remove('en-carrito'); }
+    }
+    actualizarUI();
+  };
+
+  window.quitarCarrito = function(id){
+    delete carrito[id];
+    const btn = document.getElementById('btn-'+id);
+    if(btn){ btn.textContent='＋ Agregar'; btn.classList.remove('en-carrito'); }
+    actualizarUI();
+  };
+
+  window.vaciarCarrito = function(){
+    if(!confirm('¿Vaciar el carrito?')) return;
+    carrito = {};
+    document.querySelectorAll('.tprod-btn-agregar.en-carrito').forEach(b=>{
+      b.textContent='＋ Agregar'; b.classList.remove('en-carrito');
+    });
+    actualizarUI();
+  };
+
+  function actualizarUI(){
+    const items = Object.values(carrito);
+    const total = items.reduce((a,c)=>a+c.prod.punit*c.qty,0);
+    const count = items.reduce((a,c)=>a+c.qty,0);
+
+    document.getElementById('carrito-badge').textContent = count;
+    document.getElementById('carrito-count-label').textContent = count+(count===1?' producto':' productos');
+    document.getElementById('carrito-total-monto').textContent = 'S/ '+total.toFixed(2);
+
+    const vacio     = document.getElementById('carrito-vacio');
+    const totalWrap = document.getElementById('carrito-total-wrap');
+    const footerBtns= document.getElementById('carrito-footer-btns');
+    const contEl    = document.getElementById('carrito-items');
+
+    if(!items.length){
+      vacio.style.display='block';
+      totalWrap.style.display='none';
+      footerBtns.style.display='none';
+      if(formVisible) ocultarForm();
+    } else {
+      vacio.style.display='none';
+      totalWrap.style.display='block';
+      footerBtns.style.display=!formVisible?'flex':'none';
+    }
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(vacio);
+    items.forEach(({prod:p, qty})=>{
+      const d = document.createElement('div');
+      d.className='carrito-item';
+      d.innerHTML=`
+        <div class="carrito-item-info">
+          <div class="carrito-item-nombre">${p.nombre}</div>
+          <div class="carrito-item-comp">${p.composicion} · ${p.lab}</div>
+        </div>
+        <div class="carrito-item-controls">
+          <button onclick="qtyCarrito(${p.id},-1)">−</button>
+          <span class="carrito-item-qty">${qty}</span>
+          <button onclick="qtyCarrito(${p.id},1)">+</button>
+        </div>
+        <div class="carrito-item-precio">S/ ${(p.punit*qty).toFixed(2)}</div>
+        <button class="carrito-item-quitar" onclick="quitarCarrito(${p.id})" title="Quitar">✕</button>`;
+      frag.appendChild(d);
+    });
+    contEl.innerHTML='';
+    contEl.appendChild(frag);
+  }
+
+  /* ─── ABRIR / CERRAR ─── */
+  window.abrirCarrito  = ()=>{ document.getElementById('modal-carrito').classList.add('abierto'); document.body.style.overflow='hidden'; };
+  window.cerrarCarrito = ()=>{ document.getElementById('modal-carrito').classList.remove('abierto'); document.body.style.overflow=''; };
+
+  /* ─── FORMULARIO ─── */
+  window.mostrarFormulario = ()=>{
+    if(!Object.keys(carrito).length) return;
+    formVisible = true;
+    document.getElementById('carrito-form').style.display='block';
+    document.getElementById('carrito-footer-btns').style.display='none';
+    document.getElementById('carrito-form').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  function ocultarForm(){ formVisible=false; document.getElementById('carrito-form').style.display='none'; }
+
+  /* ─── ENVIAR PEDIDO ─── */
+  window.enviarPedido = ()=>{
+    const nombre    = document.getElementById('ped-nombre').value.trim();
+    const celular   = document.getElementById('ped-celular').value.trim();
+    const direccion = document.getElementById('ped-direccion').value.trim();
+    const entrega   = document.getElementById('ped-entrega').value;
+    const pago      = document.getElementById('ped-pago').value;
+    const obs       = document.getElementById('ped-obs').value.trim();
+
+    if(!nombre){ toast('⚠️ Por favor ingresa tu nombre'); return; }
+    if(!celular){ toast('⚠️ Por favor ingresa tu celular'); return; }
+
+    const items = Object.values(carrito);
+    if(!items.length){ toast('⚠️ El carrito está vacío'); return; }
+
+    const total = items.reduce((a,c)=>a+c.prod.punit*c.qty,0);
+    const eLabel = entrega==='delivery'?'🚚 Delivery a domicilio':'🏪 Recojo en tienda';
+    const pLabel = pago==='efectivo'?'💵 Efectivo':pago==='yape'?'📱 Yape':'🔀 Yape + Efectivo';
+
+    let msg = '🏥 *PEDIDO — BOTICA SANTILLÁN*\n';
+    msg += '━━━━━━━━━━━━━━━━━━━━\n\n';
+    msg += `👤 *Cliente:* ${nombre}\n`;
+    msg += `📱 *Celular:* ${celular}\n`;
+    msg += `${eLabel}\n`;
+    if(entrega==='delivery' && direccion) msg += `📍 *Dirección:* ${direccion}\n`;
+    msg += `${pLabel}\n\n`;
+    msg += '🛒 *PRODUCTOS SOLICITADOS:*\n';
+    msg += '─────────────────────\n';
+    items.forEach(({prod:p,qty})=>{
+      msg += `• ${p.nombre}\n  ${p.composicion}\n  Cantidad: ${qty} ud${qty>1?'s':''} · S/ ${(p.punit*qty).toFixed(2)}\n`;
+    });
+    msg += '─────────────────────\n';
+    msg += `💰 *TOTAL ESTIMADO: S/ ${total.toFixed(2)}*\n`;
+    msg += '_(*Precio referencial, sujeto a confirmación)_\n';
+    if(obs) msg += `\n📝 *Observaciones:*\n${obs}\n`;
+    msg += '\n_Pedido generado desde Botica Santillán_';
+
+    window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(msg),'_blank');
+  };
+
+  /* ─── TOAST ─── */
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(()=>t.classList.remove('show'), 2800);
+  }
+
+  /* ─── INIT ─── */
+  document.addEventListener('DOMContentLoaded', ()=>{
+    render();
+    actualizarUI();
+  });
+
+})();
+</script>
+</body>
+</html>
